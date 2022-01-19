@@ -1,0 +1,39 @@
+#!/bin/bash
+
+# Utilisation : stripPicture FullName mime exportPicture
+
+FullName="$1"
+MimeType="$2"
+ExportPicture="$3"
+Thumb="${ExportPicture##*/}"
+
+# Si on veut un peu mieux comprendre
+# echo "stripPicture $1 $2 $3 $Thumb" >> /tmp/hizo.txt
+
+
+# Si la vignette existe déjà, on ne fait rien, n'est pas sensé se produire
+[[ -e "${HOME}/.cache/thumbnails/large/${Thumb}.png" || -e "${HOME}/.cache/thumbnails/normal/${Thumb}.png" ]] && exit
+
+
+# En fonction du type des fichiers
+case "${MimeType}" in
+    inode/directory)
+        # Utilisation de l'image icon.png contenu dans le dossier
+        if [[ -e "${FullName}/icon.png" ]]
+        then
+            # utilisation de l'image nommée icône comme vignette
+            cp "${FullName}/icon.png" "${ExportPicture}"
+        fi
+
+        exit ;;
+
+    video/x-matroska)
+        # Utilisation d'une image stockée dans un dossier spécifique en utilisant son hash md5 comme nom
+        if [[ -e "${HOME}/Icones/${Thumb}.png" ]]
+        then
+            cp "${HOME}/Icones/${Thumb}.png" "${ExportPicture}"
+        fi
+
+        exit ;;
+esac
+
