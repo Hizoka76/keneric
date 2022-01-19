@@ -1,6 +1,7 @@
 [Desktop Entry]
 Type=Service
-Name=Dossiers à une seule vignette (Keneric)
+Name=Folder with only one thumbnail (Keneric)
+Name[fr]=Dossiers à une seule vignette (Keneric)
 
 X-KDE-ServiceTypes=ThumbCreator
 MimeType=inode/directory;
