@@ -19,11 +19,7 @@ include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}
     )
 
-set( keneric_PART_SRCS
-  keneric.cpp
-)
-
-add_library(keneric MODULE ${keneric_PART_SRCS})
+add_library(keneric MODULE keneric.cpp)
 
 target_link_libraries(keneric Qt5::Gui KF5::KIOWidgets)
 
