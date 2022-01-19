@@ -1,0 +1,369 @@
+<a name=top>
+<h1>Keneric ReadMe</h1>
+
+
+<p>
+<div align="center"><img src="readme-images/keneric.png" alt="keneric"/>
+
+
+<div align="left">
+
+<hr>
+<h2>Contents</h2>
+<ul>
+<li><a href=#description>Description</a>
+<li><a href=#generic>Generic compilation</a>
+<li><a href=#example>Examples</a>
+<li><a href=#weaseling>More notes</a>
+<li><a href=#shit>This #### is not working</a>
+</ul>
+
+
+<hr>
+<a name=description>
+<a href=#top>[top]</a>
+<h2>Description</h2>
+
+<p>
+The Keneric KDE thumbnailer is a generic thumbnailer. It is intended to be used when there is no dedicated KDE thumbnailer and there is a fast and simple way to get the thumbnail image (oneliner).
+
+<p>
+The Keneric thumbnailer plugin is using a simple script to strip the thumbnail image from the file so the plugin can 'thumbnail' the picture.
+
+<div align="left"><img src="readme-images/plan9.png" alt="plan9"/>
+
+<p>
+The picture file in the '~/.cache/keneric' directory can be any Qt supported <a href="http://doc.qt.io/qt-5/qimage.html#reading-and-writing-image-files">/Reading and Writing Image Files/</a> format - PNG, JPG, GIF, etc.
+
+<h3>StripPicture</h3>
+
+<p>
+The 'keneric' thumbnailer plugin is executing 'stripPicture' with arguments:
+
+<ol>
+<li><a>Name of the thumbnailed file with full path</a>
+<li><a>Mime type</a>
+<li><a>MD5 hash of the #1 with full path where to save the picture</a>
+</ol>
+
+<p>
+Example call:
+
+<p>
+<pre style = "color: magenta; background-color:lightgrey;">
+$ stripPicture /media/sda2/ExampleCall/multiply.kra application/x-krita /home/rog131/.cache/keneric/383e7ca866dd36f850ffa5a189388eee
+</pre>
+
+
+
+The thumbnail plugin is making the '~/.cache/keneric' directory if it doesn't exist.
+
+<hr>
+<a name=generic>
+<a href=#top>[top]</a>
+<h2>Generic compilation</h2>
+
+<p>
+The compilation is depending:
+
+<ul>
+<li><a>cmake</a>
+<li><a>extra-cmake-modules</a>
+<li><a>kio (kio-dev)</a>
+</ul>
+
+The generic compilation:
+
+<ul>
+<li><a>cd keneric-0.2</a>
+<li><a>mkdir builddir</a>
+<li><a>cd builddir && cmake .. -DCMAKE_INSTALL_PREFIX=$(kf5-config --prefix) -DCMAKE_BUILD_TYPE=Release -DKDE_INSTALL_USE_QT_SYS_PATHS=ON</a>
+<li><a>sudo make install</a>
+</ul>
+
+<p>
+Compilation example: <a href="http://pastebin.com/WUhtNru4">http://pastebin.com/WUhtNru4</a>
+
+<hr>
+<a name=example>
+<a href=#top>[top]</a>
+<h2>Examples</h2>
+
+<h3>Krita document files .kra .ora</h3>
+
+<p>
+Both the .kra <a href="https://en.wikipedia.org/wiki/Krita"> /Krita wiki/</a> and the .ora <a href="https://en.wikipedia.org/wiki/OpenRaster"> /OpenRaster wiki/</a> are saving the thumbnail image to the image file. The thumbnail can be extracted with the unzip <a href="http://moritzmolch.com/1749"> /moritzmolch/</a>. KDE Forums: <a href="https://forum.kde.org/viewtopic.php?f=223&t=129633"> /Dolphin preview for .Kra .Ora and .Psd files/</a>
+
+<p>
+Editing the ./keneric-0.2/scripts/stripPicture:
+
+<p>
+<pre style = "color: green; background-color:lightgrey;">
+#!/bin/sh
+# Usage: stripPicture fullname mime exportPicture
+
+fullname="$1"
+mime="$2"
+exportPicture="$3"
+
+# thumbnail options by mime type
+case "$mime" in
+
+      application/x-krita)
+      unzip -p "$fullname" preview.png > "$exportPicture"
+      exit
+      ;;
+      
+      image/openraster)
+      unzip -p "$fullname" Thumbnails/thumbnail.png > "$exportPicture"
+      exit
+      ;;
+
+      *)
+#     case trap
+      exit
+      
+esac
+</pre>
+
+<p>
+Making sure that the stripPicture is executable and copying it to the /usr/local/bin/.
+
+<p>
+Testing the stripPicture script. 
+
+<p>
+Making ~/.cache/keneric/ and executing in Konsole: 
+stripPicture /path/to/the/image.kra application/x-krita /where/to/save/name.
+
+<p>
+<pre style = "color: magenta; background-color:lightgrey;">
+$ stripPicture /media/sda2/ExampleCall/multiply.kra application/x-krita /home/rog131/.cache/keneric/383e7ca866dd36f850ffa5a189388eee
+</pre>
+
+<p>
+In testing the thumbnail name be can any string but the plugin is using MD5 hash as unique name.
+
+<div align="left"><img src="readme-images/test.png" alt="test"/>
+
+<p>There should be ~/.cache/keneric/name or error messages. Removing the ~/.cache/keneric/.
+
+<p>
+Editing the ./keneric-0.2/desktop/kenericTemplate.desktop:
+
+<p>
+<pre style = "color: green; background-color:lightgrey;">
+[Desktop Entry]
+Type=Service
+Name=Krita Documents (Keneric)
+Name[x-test]=xxKrita Documentsxx
+
+X-KDE-ServiceTypes=ThumbCreator
+MimeType=application/x-krita;image/openraster;
+
+X-KDE-Library=keneric
+CacheThumbnail=true
+</pre>
+
+<p>
+Copying the desktop file to the ~/.local/share/kservices5/kenerickrita.desktop.
+
+<p>
+More of the desktop file options can be found from the KF5 thumbnailer api page: <a href="http://api.kde.org/frameworks-api/frameworks5-apidocs/kio/html/classThumbCreator.html"> /ThumbCreator Class Reference/</a>.
+
+
+<p>
+Enabling the thumbnailer from the Dolphin settings:
+
+
+<div align="left"><img src="readme-images/enable.png" alt="enable"/>
+
+<p>
+Testing - working at here.
+
+
+<h3>Blender document files .blend</h3>
+
+<p>
+The Blender <a href="http://wiki.blender.org"> /Blender wiki/</a> is adding a preview image in to the .blend file: <a href="http://wiki.blender.org/index.php/Dev:Source/Development/Projects/Blender_File_Format/Thumbnail_Previews"> /Blender thumbnail preview/</a>. The python script is part of the Blender or can be downloaded from <a href="https://developer.blender.org/diffusion/B/browse/master/release/bin/blender-thumbnailer.py"> /blender-thumbnailer.py/</a> or/and <a href="https://github.com/dfelinto/blender/blob/master/release/bin/blender-thumbnailer.py"> /blender-thumbnailer.py/</a>. 
+
+<p>
+To extract the preview image:
+
+
+<p>
+<pre style = "color: magenta; background-color:lightgrey;">
+$ blender-thumbnailer.py
+Expected 2 arguments input.blend output.png
+</pre>
+
+<p>
+Editing the /usr/local/bin/stripPicture:
+
+<p>
+<pre style = "color: green; background-color:lightgrey;">
+#!/bin/sh
+# Usage: stripPicture fullname mime exportPicture
+
+fullname="$1"
+mime="$2"
+exportPicture="$3"
+
+# thumbnail options by mime type
+case "$mime" in
+
+      application/x-krita)
+      unzip -p "$fullname" preview.png > "$exportPicture"
+      exit
+      ;;
+      
+      image/openraster)
+      unzip -p "$fullname" Thumbnails/thumbnail.png > "$exportPicture"
+      exit
+      ;;
+      
+      application/x-blender)
+      blender-thumbnailer.py "$fullname" "$exportPicture"
+      exit
+      ;;
+
+      *)
+#     case trap
+      exit
+      
+esac
+</pre>
+
+Testing the stripPicture.
+
+<p>
+Adding the desktop file to the ~/.local/share/kservices5/kenericblend.desktop:
+
+<p>
+<pre style = "color: green; background-color:lightgrey;">
+[Desktop Entry]
+Type=Service
+Name=Blender Documents (Keneric)
+Name[x-test]=xxBlender Documentsxx
+
+X-KDE-ServiceTypes=ThumbCreator
+MimeType=application/x-blender;
+
+X-KDE-Library=keneric
+CacheThumbnail=true
+</pre>
+
+<h3>Windows metafiles .wmf </h3>
+
+<p>
+Windows metafiles <a href="https://en.wikipedia.org/wiki/Windows_Metafile"> /Windows Metafile wiki/</a>: 'Windows Metafiles are intended to be portable between applications and may contain both vector graphics and bitmap components. It acts in a similar manner to SVG files.' Windows metafiles can be converted by the ImageMagick <a href="http://www.imagemagick.org/script/index.php"> /ImageMagick/</a> to the other formats.
+
+<p>
+Editing the /usr/local/bin/stripPicture:
+
+<p>
+<pre style = "color: green; background-color:lightgrey;">
+#!/bin/sh
+# Usage: stripPicture fullname mime exportPicture
+
+fullname="$1"
+mime="$2"
+exportPicture="$3"
+
+# thumbnail options by mime type
+case "$mime" in
+
+      application/x-krita)
+      unzip -p "$fullname" preview.png > "$exportPicture"
+      exit
+      ;;
+      
+      image/openraster)
+      unzip -p "$fullname" Thumbnails/thumbnail.png > "$exportPicture"
+      exit
+      ;;
+      
+      application/x-blender)
+      blender-thumbnailer.py "$fullname" "$exportPicture"
+      exit
+      ;;
+
+      image/x-wmf)
+      convert "$fullname" png:"$exportPicture"
+      exit
+      ;;
+      
+      *)
+#     case trap
+      exit
+      
+esac
+</pre>
+
+Testing the stripPicture.
+
+<p>
+Adding the desktop file to the ~/.local/share/kservices5/kenericwmf.desktop:
+
+<p>
+<pre style = "color: green; background-color:lightgrey;">
+[Desktop Entry]
+Type=Service
+Name=Windws Metafile (Keneric)
+Name[x-test]=xxWindws Metafilexx
+
+X-KDE-ServiceTypes=ThumbCreator
+MimeType=image/x-wmf;
+
+X-KDE-Library=keneric
+CacheThumbnail=true
+</pre>
+
+
+<p>
+Testing all...
+
+<div align="left"><img src="readme-images/working.jpg" alt="working"/>
+
+<p>
+Working at here.
+
+<hr>
+<a name=weaseling>
+<a href=#top>[top]</a>
+<h2>More notes</h2>
+
+<p>
+Krita sample file from: <a href="http://tysontan.tumblr.com/post/91061435966/krita-free-painting-app-tutorial"> /Krita Free Painting App Tutorial/</a>.
+
+<p>
+OpenRaster sample file from: <a href="http://www.advogato.org/person/AlanHorkan/diary/366.html"> /OpenRaster and OpenDocument/</a>.
+
+<p>
+Blender sample from: <a href="https://www.blender.org/download/demo-files/"> /demo-files/</a>.
+
+<p>
+Windows Metafile sample from: <a href="https://www.thistlegirldesigns.com/wmfinfo.htm"> /WMF Information and samples/</a>.
+
+<p>
+There are lot of thumbnailer scripts available - search engines are your friends...
+
+
+<hr>
+<a name=shit>
+<a href=#top>[top]</a>
+<h2>This #### is not working</h2>
+
+<p>
+Test your stripPicture with the terminal. If the stripPicture script is not working then the thumbnailer won't work.
+
+<p>
+After you edit the desktop files execute the 'kbuildsycoca5 --noincremental' to rebuild the system configuration cache.
+
+
+<p>
+<a href=#top>[top]</a>
+<br>
+
+
+ 
