@@ -1,0 +1,212 @@
+#!/bin/bash
+
+#############
+## Version ##
+#############
+# v0.3 - 21/09/23
+# Mise à jour du système du fichier de config
+
+
+# Utilisation : stripPicture FullName mime exportPicture
+
+FullName="$1"
+MimeType="$2"
+ExportPicture="$3"
+Thumb="${ExportPicture##*/}"
+
+# Si on veut un peu mieux comprendre
+# echo "stripPicture $1 $2 $3 $Thumb" >> /tmp/hizo.txt
+
+
+# Si la vignette existe déjà, on ne fait rien, n'est pas sensé se produire
+[[ -e "${HOME}/.cache/thumbnails/large/${Thumb}.png" || -e "${HOME}/.cache/thumbnails/normal/${Thumb}.png" ]] && exit
+
+
+
+function Dependencies
+{
+    # ${@} : Les arguments doivent être de type : commande:paquet ou commande (si paquet = commande)
+
+    local Command
+
+    # Vérification des dépendances
+    for Command in "${@}"
+    do
+        # Si la commande n'existe pas
+        [[ -z $(which ${Command}) ]] && return 1
+    done
+
+    return 0
+}
+
+
+
+# En fonction du type des fichiers
+case "${MimeType}" in
+    inode/directory)
+        Dependencies convert identify || exit 1
+
+        # -maxdepth 1 : Se limite au dossier, ne descend pas dans l'arborescence
+        # ! -type d : Exclusion des dossiers pour éviter de remonter un dossier cover.jpg par ex.
+        # -iregex : Recherche les fichiers s'appelant folder ou cover ou front avec une extension jpeg ou jpg ou png sans prise en compte de la casse
+        # -print : affiche le résultat
+        # -quit : Arrêt de la commande des qu'il a trouvé un fichier
+        Image="$(find "${FullName}" -maxdepth 1 ! -type d -iregex "${FullName/%\/}/\.?\(folder\|front\|cover\|icon\).\(jpg\|png\|jpeg\|webp\)" -print -quit)"
+
+        # Arrêt du travail si aucune image n'a été trouvée
+        [[ ! -f "${Image}" ]] && exit
+
+        # Version ajout de l'image sur l’icône par défaut
+        # Pour éviter de convertir le fichier à chaque fois
+        if [[ ! -f "/tmp/folder_icon.png" ]]
+        then
+            # Thème utilisé
+            Theme=$(sed -n "/Name=/ s/.*=//p" "/usr/share/icons/default/index.theme")
+
+            # Nom de l'icône utilisée pour les dossiers
+            IconName=$(sed -n "/icon name/ s@.*=\"\(.*\)\".*@\1@p" "${HOME}/.local/share/mime/inode/directory.xml")
+            [[ -z "${IconName}" ]] && IconName=$(sed -n "/icon name/ s@.*=\"\(.*\)\".*@\1@p" "/usr/share/mime/inode/directory.xml")
+
+            # Icône, doit fonctionner dans le cas des png et des svg
+            # On conserve l'image la plus lourde donc logiquement la meilleure qualité
+            Icon="$(find "/usr/share/icons/${Theme,,}/mimetypes/" -iname "${IconName}.*" -printf '%s %p\n' | sort -nr | head -n 1)"
+            [[ -z "${Icon}" ]] && Icon="$(find "/usr/share/icons/${Theme,,}/" -iname "${IconName}.*" -printf '%s %p\n' | sort -nr | head -n 1)"
+            Icon="${Icon/#* }"
+
+            # Arrêt du travail si l'icône n'a pas été trouvée
+            [[ ! -f "${Icon}" ]] && exit
+
+            # Extension du fichier
+            Ext="${Icon##*.}"
+
+            # Si c'est un svg, il faut le convertir
+            if [[ "${Ext,,}" == "svg" ]]
+            then
+                if Dependencies ksvgtopng5
+                then
+                    # Commande kde
+                    ksvgtopng5 256 256 "${Icon}" "/tmp/folder_icon.png"
+
+                elif Dependencies rsvg-convert
+                then
+                    # Le résultat est bien plus propre pour une taille moindre que convert
+                    rsvg-convert "${Icon}" -f png -a -w 256 -o "/tmp/folder_icon.png"
+
+                else
+                    # Imagemagick donne un mauvais résultat...
+                    convert -resize "256x256" -format png "$Icon" "/tmp/folder_icon.png"
+                fi
+
+            # Sinon on redimensionne l'image en 256px si besoin
+            else
+                convert -resize "256x256>" "${Icon}" "/tmp/folder_icon.png"
+            fi
+
+            # Arrêt du travail si l'icône temporaire n'existe pas
+            [[ ! -f "/tmp/folder_icon.png" ]] && exit
+        fi
+
+        # Création de la vignette
+        # -resize "212x124>" : La taille max de la sous image soit être de 212 * 124 pour qu'elle rentre bien dans l'icône de breeze
+        # -bordercolor black -border 1 : Ajout d'un cadre noir pour le style
+        # -geometry +30+90 : Place l'image dans l’icône du dossier
+        # -colors 255 : Diminution de la qualité de l'image pour diminuer le poids
+
+        # Il ne faut pas aplatir les icônes avec colors qui fait perdre la transparence
+        [[ "${Image,,}" != */?(.)icon.png ]] && Arg="-bordercolor black -border 1 -colors 96"
+
+        convert -resize "212x124>" ${Arg} "${Image}" "/tmp/thumb_icon.png"
+
+        # Arrêt du travail si l'image n'existe pas
+        [[ ! -f "/tmp/thumb_icon.png" ]] && exit
+
+        # Calcul l'emplacement de la sous image
+        ImageSize=$(identify -format "%wx%h" "/tmp/thumb_icon.png")
+        FolderSize=$(identify -format "%wx%h" "/tmp/folder_icon.png")
+        w=$(( (${FolderSize%x*} - ${ImageSize%x*}) / 2 ))
+        h=$(( (${FolderSize#*x} - ${ImageSize#*x}) / 2 + 30 )) # Décalage de 30px pour bien le placer
+
+        # Empilement des 2 images
+        composite -compose src-over "/tmp/thumb_icon.png" "/tmp/folder_icon.png" -geometry +${w}+${h} -format png "${ExportPicture}"
+
+        # Suppression de l'image
+        rm "/tmp/thumb_icon.png"
+
+        exit ;;
+
+    video/x-matroska)
+        # Si les dépendances sont présentes, on va rechercher une image dans le mkv
+        if Dependencies jq mkvmerge mkvextract
+        then
+            # Récupération de la liste des fichiers joints
+            mapfile -td 'µ' jsonValues < <(mkvmerge -J "${FullName}" | jq -r '.attachments | to_entries|map("\(.value)µ")|.[]')
+            unset jsonValues["-1"]
+
+            # Regarde si on a une indication dans le fichier de préférences
+            Preference=$(grep "${Thumb}" "${HOME}/.config/hizo-service-menu.conf" 2>/dev/null)
+
+            # Si on a une préférence, on l'utilise
+            if [[ ${Preference} ]]
+            then
+                Preference="${Preference#*=}"
+                Id="${Preference%%:*}"
+                Name="${Preference##*:}"
+                mkvextract attachments "${FullName}" ${Id}:"/tmp/${Name}" &>/dev/null
+
+                # Si l'extraction est OK, on l'utilise
+                if [[ -f "/tmp/${Name}" ]]
+                then
+                    convert -resize "256x256>" "/tmp/${Name}" "${ExportPicture}"
+                    rm "/tmp/${Name}"
+                    exit
+                fi
+            fi
+
+            # Boucle recherchant certaines images
+            for FichierJoint in "${jsonValues[@]}"
+            do
+                # Récupération du nom de la piste
+                [[ "${FichierJoint}" =~ file_name.:.([^\"]+) ]]
+                Name="${BASH_REMATCH[1]}"
+
+                # Récupération de l'id de la piste
+                [[ "${FichierJoint}" =~ id.:([0-9]+) ]]
+                Id="${BASH_REMATCH[1]}"
+
+                # Si on a pas pu récupérer l'id du fichier joint
+                [[ -z ${Id} ]] && continue
+
+                # Si c'est une image
+                if [[ "${Name,,}" == *.+(jpg|jpeg|png|webp|gif) ]]
+                then
+                    # Si le fichier a un nom spécifique
+                    if [[ "${Name,,}" == +(cover|front|dvd).* ]]
+                    then
+                        mkvextract attachments "${FullName}" ${Id}:"/tmp/${Name}" &>/dev/null
+                        convert -resize "256x256>" "/tmp/${Name}" "${ExportPicture}"
+                        rm "/tmp/${Name}"
+                        exit 0
+
+                    # Dans les autres cas, on la conserve
+                    else
+                        ImageList+=("${Id}:/tmp/${Name}")
+                    fi
+                fi
+            done
+
+            # Utilisation de la 1ere image trouvée
+            if [[ ${ImageList[0]} ]]
+            then
+                mkvextract attachments "${FullName}" ${ImageList[0]%%:*}:"${ImageList[0]#*:}" &>/dev/null
+                convert -resize "256x256>" "${ImageList[0]#*:}" "${ExportPicture}"
+                rm "${ImageList[0]#*:}"
+                exit
+            fi
+        fi
+
+        # Si les dépendances ne sont pas bonnes ou qu'il n'y a pas d'image dans le mkv
+        Dependencies ffmpegthumbnailer && ffmpegthumbnailer -f -s 256 -i "${FullName}" -o "${ExportPicture}"
+
+        exit ;;
+esac
+
