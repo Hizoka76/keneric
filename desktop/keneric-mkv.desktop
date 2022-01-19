@@ -1,6 +1,7 @@
 [Desktop Entry]
 Type=Service
-Name=Fichiers MKV (Keneric)
+Name=MKV files (Keneric)
+Name[fr]=Fichiers MKV (Keneric)
 
 X-KDE-ServiceTypes=ThumbCreator
 MimeType=video/x-matroska;application/x-matroska
