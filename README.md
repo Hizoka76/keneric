@@ -109,6 +109,9 @@ itemsProhibited=/home/hizoka/Movies/HD
 # Lorsque les 2 options sont actives, le fichier x-matroska doit les respecter toutes les 2.
 # Il doit se trouver dans le dossier /home/hizoka/Movies/ et sa descendence.
 # Mais il ne doit pas être dans le dossier /home/hizoka/Movies/HD ou descendence.
+
+# Si l'adresse fini par un /, seuls ses descendants sont concernés.
+# Si elle ne finit par par un /, le dossier et ses descendants sont concernés.
 ```
  - Famille de l'élément :
 ```
@@ -239,6 +242,9 @@ itemsProhibited=/home/hizoka/Movies/HD
 # When both options are active, the x-matroska file must respect both of them.
 # It must be in the folder /home/hizoka/Movies/ or its descendants.
 # But it must not be in the /home/hizoka/Movies/HD folder or its descendants.
+
+# If the address ends with a /, only its descendants are concerned.
+# If it does not end with a /, the folder and its descendants are concerned.
 ```
  - Family of the item:
 ```
