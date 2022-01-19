@@ -3,9 +3,7 @@
 #############
 ## Version ##
 #############
-# v0.3 - 21/09/23
-# Mise à jour du système du fichier de config
-
+# v0.4 - 22/01/19
 
 # Utilisation : stripPicture FullName mime exportPicture
 
@@ -20,7 +18,6 @@ Thumb="${ExportPicture##*/}"
 
 # Si la vignette existe déjà, on ne fait rien, n'est pas sensé se produire
 [[ -e "${HOME}/.cache/thumbnails/large/${Thumb}.png" || -e "${HOME}/.cache/thumbnails/normal/${Thumb}.png" ]] && exit
-
 
 
 function Dependencies
@@ -38,7 +35,6 @@ function Dependencies
 
     return 0
 }
-
 
 
 # En fonction du type des fichiers
@@ -134,6 +130,7 @@ case "${MimeType}" in
 
         exit ;;
 
+
     video/x-matroska)
         # Si les dépendances sont présentes, on va rechercher une image dans le mkv
         if Dependencies jq mkvmerge mkvextract
@@ -141,26 +138,6 @@ case "${MimeType}" in
             # Récupération de la liste des fichiers joints
             mapfile -td 'µ' jsonValues < <(mkvmerge -J "${FullName}" | jq -r '.attachments | to_entries|map("\(.value)µ")|.[]')
             unset jsonValues["-1"]
-
-            # Regarde si on a une indication dans le fichier de préférences
-            Preference=$(grep "${Thumb}" "${HOME}/.config/hizo-service-menu.conf" 2>/dev/null)
-
-            # Si on a une préférence, on l'utilise
-            if [[ ${Preference} ]]
-            then
-                Preference="${Preference#*=}"
-                Id="${Preference%%:*}"
-                Name="${Preference##*:}"
-                mkvextract attachments "${FullName}" ${Id}:"/tmp/${Name}" &>/dev/null
-
-                # Si l'extraction est OK, on l'utilise
-                if [[ -f "/tmp/${Name}" ]]
-                then
-                    convert -resize "256x256>" "/tmp/${Name}" "${ExportPicture}"
-                    rm "/tmp/${Name}"
-                    exit
-                fi
-            fi
 
             # Boucle recherchant certaines images
             for FichierJoint in "${jsonValues[@]}"
