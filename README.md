@@ -1,6 +1,8 @@
 # keneric
 
 ## Version Française :
+Si ça ne fonctionne pas avec le navigateur Dolphin, supprimer le groupe [PreviewSettings] du fichier ~/.config/dolphinrc.
+
 ### Description :
 keneric est un générateur de vignettes pour plasma KDE5 qui utilise un script (bash ou python) pour créer ces vignettes.
 
@@ -25,7 +27,7 @@ sudo make install
 Le fichier **/usr/lib/x86_64-linux-gnu/qt5/plugins/keneric.so** est créé.
 
 #### Depuis le binaire :
-Extraire le contenu d'un fichier deb depuis le ppa : **https://launchpad.net/~hizo/+archive/ubuntu/service-menus/+packages**.
+Extraire le binaire du fichier tar.gz : **https://github.com/Hizoka76/keneric/releases/latest**.
 
 Le déplacer dans le dossier **/usr/lib/x86_64-linux-gnu/qt5/plugins/**.
 
@@ -134,6 +136,10 @@ Les types de fichiers qui seront utilisés sont ceux définis dans les fichiers 
 
 
 ## English version:
+# Si l'adresse fini par un /, seuls ses descendants sont concernés.
+# Si elle ne finit par par un /, le dossier et ses descendants sont concernés.
+If it doesn't work with the Dolphin browser, remove the [PreviewSettings] group from the ~/.config/dolphinrc file.
+
 ### Description:
 keneric is a thumbnail generator for KDE5 plasma that uses a script (bash or python) to create these thumbnails.
 
@@ -158,7 +164,7 @@ sudo make install
 The file **/usr/lib/x86_64-linux-gnu/qt5/plugins/keneric.so** is created.
 
 #### From the binary :
-Extract the contents of a deb file from the ppa: **https://launchpad.net/~hizo/+archive/ubuntu/service-menus/+packages**.
+Extract the binary from the tar.gz file : **https://github.com/Hizoka76/keneric/releases/latest**.
 
 Move it into the folder **/usr/lib/x86_64-linux-gnu/qt5/plugins/**.
 
