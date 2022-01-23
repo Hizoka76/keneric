@@ -14,6 +14,7 @@
 //    along with this program; if not, write to the Free Software
 //    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
+// https://specifications.freedesktop.org/thumbnail-spec/thumbnail-spec-latest.html
 
 //    keneric can use a conf file now (~/.config/keneric.conf).
 //    The file can contains:
@@ -31,6 +32,9 @@
 //    If foldersAuthorized and foldersProhibited are used,
 //    the file needs to be in foldersAuthorized but not in foldersProhibited.
 
+
+// 2022/01/23 - v0.5 by Terence Belleguic
+//  Load of the thumbnail if exists.
 
 // 2022/01/18 - v0.4 by Terence Belleguic
 //  Added: Use of a conf file.
@@ -84,6 +88,16 @@ bool Keneric::create(const QString& path, int /*width*/, int /*heigth*/, QImage&
     // Hash de l'URI qui sera utilisé par le système
     QString md5Hash = QString(QCryptographicHash::hash(pathURI,QCryptographicHash::Md5).toHex());
 
+    // Vignette finale
+    QString pathThumb = QString(QStandardPaths::writableLocation(QStandardPaths::GenericCacheLocation) + "/thumbnails/large/" + md5Hash + ".png");
+
+    // Si la vignette existe déjà, on la recharge directement
+    // C'est le cas lorsqu'on survol un fichier pour afficher ses infos dans Dolphin
+    if (QFile::exists(pathThumb))
+    {
+        // Chargement de la vignette existante
+        return img.load(pathThumb);
+    }
 
     // CONFIG FILE //
     // Fichier de config
