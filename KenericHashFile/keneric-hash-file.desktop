@@ -1,0 +1,13 @@
+[Desktop Entry]
+Type=Service
+X-KDE-ServiceTypes=KonqPopupMenu/Plugin
+MimeType=all/allfiles;inode/directory;
+Actions=_SEPARATOR_;hash-md5-file;
+X-KDE-Submenu=Keneric Actions
+TryExec=keneric-hash-file
+
+[Desktop Action hash-md5-file]
+Name=Copy the md5 hash of the file
+Name[fr]=Copie le hash md5 du fichier
+Icon=edit-copy
+Exec=keneric-hash-file %u

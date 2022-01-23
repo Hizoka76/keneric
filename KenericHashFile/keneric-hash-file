@@ -1,0 +1,61 @@
+#!/bin/bash
+
+#############################################
+## Copie dans le presse papier le hash md5 ##
+#############################################
+
+
+#############
+## Version ##
+#############
+# v0.1 - 2022/01/23
+
+
+# Fonction traduisant l'url dans le bon format
+function url_encode
+{
+    # $1 : url du fichier sans file://
+
+    # Si aucune url donnée
+    [[ -z "${1}" ]] && return 1
+
+    local LANG=C i Char Thumb
+
+    # Traite les caractères de l'url
+    for (( i = 0; i < ${#1}; i++ ))
+    do
+        Char="${1:i:1}"
+
+        # Si c'est un caractère à ne pas modifier
+        if [[ "${Char}" == [[:alnum:]-.,_~/:\(\)\&\!@\[\]] ]]
+        then
+            Thumb+="${Char}"
+
+        # S'il faut encoder le caractère
+        else
+            Thumb+=$(printf '%%%02X' "'${Char}")
+        fi
+    done
+
+    # Encodage de l'url
+    Thumb="$(echo -n "file://${Thumb}" | md5sum)"
+
+    # Renvoie l'url encodée
+    echo "${Thumb%%[[:space:]]*}"
+
+    return 0
+}
+
+
+# Hash md5 du fichier
+Hash=$(url_encode "${1}")
+
+# Copie des liens en supprimant le dernier saut de ligne
+if which qdbus &>/dev/null
+then
+    qdbus org.kde.klipper /klipper org.kde.klipper.klipper.setClipboardContents "${Hash}"
+
+elif which xclip &>/dev/null
+then
+    xclip -i -sel clipboard < <(echo -n "${Hash}")
+fi

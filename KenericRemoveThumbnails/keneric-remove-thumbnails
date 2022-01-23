@@ -1,0 +1,80 @@
+#!/bin/bash
+
+
+##########################################################
+## Suppression des vignettes des éléments sélectionnées ##
+##########################################################
+
+
+#############
+## Version ##
+#############
+# v0.1 - 2022/01/23
+
+
+# Fonction traduisant l'url dans le bon format
+function url_encode
+{
+    # $1 : url du fichier sans file://
+
+    # Si aucune url donnée
+    [[ -z "${1}" ]] && return 1
+
+    local LANG=C i Char Thumb
+
+    # Traite les caractères de l'url
+    for (( i = 0; i < ${#1}; i++ ))
+    do
+        Char="${1:i:1}"
+
+        # Si c'est un caractère à ne pas modifier
+        if [[ "${Char}" == [[:alnum:]-.,_~/:\(\)\&\!@\[\]] ]]
+        then
+            Thumb+="${Char}"
+
+        # S'il faut encoder le caractère
+        else
+            Thumb+=$(printf '%%%02X' "'${Char}")
+        fi
+    done
+
+    # Encodage de l'url
+    Thumb="$(echo -n "file://${Thumb}" | md5sum)"
+
+    # Renvoie l'url encodée
+    echo "${Thumb%%[[:space:]]*}"
+
+    return 0
+}
+
+
+# Fonction de rafraîchissement des fenêtres Dolphin
+function DolphinRefresh
+{
+    # Rechargement de la fenêtre Dolphin
+    if which qdbus &>/dev/null
+    then
+        for Fenetre in $(qdbus "org.kde.dolphin*")
+        do
+            qdbus "${Fenetre}" /dolphin/Dolphin_1/actions/view_redisplay trigger
+        done
+    fi
+}
+
+
+
+##############################
+## Suppression de vignettes ##
+##############################
+# Traite la liste des fichiers
+for Item in "${@}"
+do
+    # Nom des vignettes
+    Thumb="$(url_encode "${Item}")"
+
+    # Suppression des vignettes
+    find "${HOME}/.cache/thumbnails/" -name "${Thumb}*" -delete
+done
+
+# Rafraîchissement de l'affichage de Dolphin
+DolphinRefresh
