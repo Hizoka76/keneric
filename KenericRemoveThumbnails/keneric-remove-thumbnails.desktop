@@ -7,7 +7,7 @@ TryExec=keneric-remove-thumbnails
 X-KDE-Submenu=Keneric Actions
 
 [Desktop Action keneric-remove-thumbnails]
-Name=Delete the thumbnails' items
-Name[fr]=Supprime les vignettes des éléments
+Name=Delete thumbnails of items
+Name[fr]=Supprimer les vignettes des éléments
 Icon=delete
 Exec=keneric-remove-thumbnails %U
