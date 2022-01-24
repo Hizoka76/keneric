@@ -94,7 +94,7 @@ Le fichier Test2.mkv affiche une icône personnalisée via le fichier keneric.co
  - Le dossier KenericHashFile présente un service menu copiant le hash d'un élément.
  - Le dossier KenericRemoveThumbnails présente un service menu supprimant les vignettes d'éléments.
 
-
+##
 
 ## English version:
 If it doesn't work with the Dolphin browser, remove the [PreviewSettings] group from the ~/.config/dolphinrc file.
