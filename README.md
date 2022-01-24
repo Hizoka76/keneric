@@ -94,8 +94,6 @@ Le fichier mkv affiche une image qu'il contient.
 
 
 ## English version:
-# Si l'adresse fini par un /, seuls ses descendants sont concernés.
-# Si elle ne finit par par un /, le dossier et ses descendants sont concernés.
 If it doesn't work with the Dolphin browser, remove the [PreviewSettings] group from the ~/.config/dolphinrc file.
 
 ### Description:
