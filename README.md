@@ -93,6 +93,8 @@ Le fichier Test2.mkv affiche une icône personnalisée via le fichier keneric.co
  - Le dossier conf présente le fonctionnement du fichier de configuration et donne des exemples.
  - Le dossier KenericHashFile présente un service menu copiant le hash d'un élément.
  - Le dossier KenericRemoveThumbnails présente un service menu supprimant les vignettes d'éléments.
+ - Le dossier KenericCustomIcon présente un service menu facilitant l'utilisation de vignettes personnalisées.
+ - Le dossier KenericDeleteCustomIcon présente un service menu facilitant la suppression de vignettes personnalisées.
 
 ##
 
@@ -188,4 +190,6 @@ The Test2.mkv file displays an custom icon via the keneric.conf file.
  - The conf folder presents how the configuration file works and gives examples.
  - The KenericHashFile folder presents a menu service copying the hash of an item.
  - The KenericRemoveThumbnails folder presents a menu service deleting thumbnails of items.
+ - The KenericCustomIcon folder presents a menu service to facilitate the use of custom icons.
+ - The KenericDeleteCustomIcon folder presents a menu service to facilitate the deletion of custom thumbnails.
 
