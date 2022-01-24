@@ -8,6 +8,6 @@ TryExec=keneric-hash-file
 
 [Desktop Action hash-md5-file]
 Name=Copy the md5 hash of the file
-Name[fr]=Copie le hash md5 du fichier
+Name[fr]=Copier le hash md5 du fichier
 Icon=edit-copy
 Exec=keneric-hash-file %u
