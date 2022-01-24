@@ -22,7 +22,7 @@ Il suffit de faire un clic droit sur les éléments (fichiers ou dossiers) puis 
 
 ## English version:
 ### Presentation:
-This menu service allows you to specify the images to be used as custom thumbnails for the selected items.
+This service menu allows you to delete custom thumbnails of selected items.
 
 It changes the ~/.config/keneric.conf file.
 
