@@ -48,20 +48,6 @@ function url_encode
 }
 
 
-# Fonction de rafraîchissement des fenêtres Dolphin
-function DolphinRefresh
-{
-    # Rechargement de la fenêtre Dolphin
-    if which qdbus &>/dev/null
-    then
-        for Fenetre in $(qdbus "org.kde.dolphin*")
-        do
-            qdbus "${Fenetre}" /dolphin/Dolphin_1/actions/view_redisplay trigger
-        done
-    fi
-}
-
-
 # Fonction d'affichage des erreurs
 function ErrorMsg
 {
@@ -74,7 +60,7 @@ function ErrorMsg
     then
         kdialog \
             --title "${1}" \
-            --icon "delete" \
+            --icon "remove-link" \
             --error "${2}"
     fi
 }
@@ -83,6 +69,13 @@ function ErrorMsg
 ##############################
 ## Suppression de vignettes ##
 ##############################
+
+# Vérifie que le fichier de config existe
+if ! grep -q '\[icons\]' "${HOME}/.config/keneric.conf"
+then
+    exit
+fi
+
 # Traite la liste des fichiers
 for Item in "${@}"
 do
@@ -91,20 +84,40 @@ do
     then
         if [[ "${LANG}" == fr* ]]
         then
-            ErrorMsg "Suppression des vignettes" "Le fichier <b>${Item}</b> est introuvable !"
+            ErrorMsg "Suppression des liens des vignettes" "Le fichier <b>${Item}</b> est introuvable !"
         else
-            ErrorMsg "Thumbnails remove" "The <b>${Item}</b> file cannot be found!"
+            ErrorMsg "Thumbnails link remove" "The <b>${Item}</b> file cannot be found!"
         fi
 
         continue
     fi
 
-    # Nom des vignettes
+    # Hash de la vignette
     Thumb="$(url_encode "${Item}")"
 
-    # Suppression des vignettes
-    find "${HOME}/.cache/thumbnails/" -name "${Thumb}*" -delete
+    # Suppression du lien du fichier de config
+    sed -i "/${Thumb}=/d" "${HOME}/.config/keneric.conf"
 done
 
-# Rafraîchissement de l'affichage de Dolphin
-DolphinRefresh
+# S'il y a le module de suppression des vignettes
+if which keneric-remove-thumbnails &>/dev/null
+then
+    keneric-remove-thumbnails "${@}"
+fi
+
+# Message de fin de traitement
+if [[ "${LANG}" == fr* ]]
+then
+    kdialog \
+    --title "Suppression des liens des vignettes" \
+    --icon "remove-link" \
+    --dontagain hizo-service-menus.cfg:KenericDeleteChooseIcon \
+    --msgbox "Suppression des liens des vignettes personnalisées terminée."
+
+else
+    kdialog \
+    --title "Thumbnails link remove" \
+    --icon "remove-link" \
+    --dontagain hizo-service-menus.cfg:KenericDeleteChooseIcon \
+    --msgbox "Removal of the custom thumbnails link completed."
+fi

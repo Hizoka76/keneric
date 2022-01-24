@@ -48,20 +48,6 @@ function url_encode
 }
 
 
-# Fonction de rafraîchissement des fenêtres Dolphin
-function DolphinRefresh
-{
-    # Rechargement de la fenêtre Dolphin
-    if which qdbus &>/dev/null
-    then
-        for Fenetre in $(qdbus "org.kde.dolphin*")
-        do
-            qdbus "${Fenetre}" /dolphin/Dolphin_1/actions/view_redisplay trigger
-        done
-    fi
-}
-
-
 # Fonction d'affichage des erreurs
 function ErrorMsg
 {
@@ -74,7 +60,7 @@ function ErrorMsg
     then
         kdialog \
             --title "${1}" \
-            --icon "delete" \
+            --icon "link" \
             --error "${2}"
     fi
 }
@@ -83,6 +69,13 @@ function ErrorMsg
 ##############################
 ## Suppression de vignettes ##
 ##############################
+
+# Vérifie que le fichier de config existe et que le groupe icon existe
+if ! grep -q '\[icons\]' "${HOME}/.config/keneric.conf"
+then
+    echo "[icons]" >> "${HOME}/.config/keneric.conf"
+fi
+
 # Traite la liste des fichiers
 for Item in "${@}"
 do
@@ -99,12 +92,56 @@ do
         continue
     fi
 
-    # Nom des vignettes
+    # Texte
+    if [[ "${LANG}" == fr* ]]
+    then
+        Title="Choix de l'icône du fichier ${Item##*/}"
+    else
+        Title="Choice of the icon of the ${Item##*/} file"
+    fi
+
+    # Choix de l'icône
+    Icon=$(kdialog \
+        --title "${Title}" \
+        --getopenfilename \
+        --multiple \
+        --separate-output \
+        --icon "tag-add") || continue
+
+
+    # Hash de la vignette
     Thumb="$(url_encode "${Item}")"
 
-    # Suppression des vignettes
-    find "${HOME}/.cache/thumbnails/" -name "${Thumb}*" -delete
+    # Si une icône personnalisée existe déjà
+    if grep -q "${Thumb}=" "${HOME}/.config/keneric.conf"
+    then
+        # Modification de l'icône personnalisée
+        sed -i "/${Thumb}=/ s/.*/${Thumb}=${Icon//\//\\/}/" "${HOME}/.config/keneric.conf"
+    else
+        # Ajout de l'icône personnalisée dans le fichier de config keneric.conf
+        sed -i "/\[icons\]/a ${Thumb}=${Icon}" "${HOME}/.config/keneric.conf"
+    fi
 done
 
-# Rafraîchissement de l'affichage de Dolphin
-DolphinRefresh
+# S'il y a le module de suppression des vignettes
+if which keneric-remove-thumbnails &>/dev/null
+then
+    keneric-remove-thumbnails "${@}"
+fi
+
+# Message de fin de traitement
+if [[ "${LANG}" == fr* ]]
+then
+    kdialog \
+    --title "Suppression des vignettes" \
+    --icon "link" \
+    --dontagain hizo-service-menus.cfg:KenericChooseIcon \
+    --msgbox "Suppression des vignettes terminée."
+
+else
+    kdialog \
+    --title "Thumbnails remove" \
+    --icon "link" \
+    --dontagain hizo-service-menus.cfg:KenericChooseIcon \
+    --msgbox "Removal of thumbnails completed."
+fi

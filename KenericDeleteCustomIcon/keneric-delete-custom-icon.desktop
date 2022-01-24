@@ -1,0 +1,13 @@
+[Desktop Entry]
+Type=Service
+X-KDE-ServiceTypes=KonqPopupMenu/Plugin
+MimeType=all/allfiles;inode/directory;
+Actions=_SEPARATOR_;keneric-delete-custom-icon;
+TryExec=keneric-delete-custom-icon
+X-KDE-Submenu=Keneric Actions
+
+[Desktop Action keneric-delete-custom-icon]
+Name=Remove the custom thumbnail link
+Name[fr]=Supprimer le lien de la vignette personnalisée
+Icon=remove-link
+Exec=keneric-delete-custom-icon %U

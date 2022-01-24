@@ -1,0 +1,13 @@
+[Desktop Entry]
+Type=Service
+X-KDE-ServiceTypes=KonqPopupMenu/Plugin
+MimeType=all/allfiles;inode/directory;
+Actions=_SEPARATOR_;keneric-custom-icon;
+TryExec=keneric-custom-icon
+X-KDE-Submenu=Keneric Actions
+
+[Desktop Action keneric-custom-icon]
+Name=Choose a custom thumbnail
+Name[fr]=Choisir une vignette personnalisée
+Icon=link
+Exec=keneric-custom-icon %U

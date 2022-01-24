@@ -47,6 +47,37 @@ function url_encode
 }
 
 
+# Fonction d'affichage des erreurs
+function ErrorMsg
+{
+    # $1 : Titre à afficher
+    # $2 : Message à afficher
+
+    local Message
+
+    if [[ $(which kdialog) ]]
+    then
+        kdialog \
+            --title "${1}" \
+            --icon "edit-copy" \
+            --error "${2}"
+    fi
+}
+
+
+# Si le fichier n'existe pas
+if [[ ! -e "${1}" ]]
+then
+    if [[ "${LANG}" == fr* ]]
+    then
+        ErrorMsg "Hash du fichier" "Le fichier <b>${1}</b> est introuvable !"
+    else
+        ErrorMsg "File hash" "The <b>${1}</b> file cannot be found!"
+    fi
+
+    exit
+fi
+
 # Hash md5 du fichier
 Hash=$(url_encode "${1}")
 
