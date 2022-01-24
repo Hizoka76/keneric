@@ -80,11 +80,13 @@ echo "$PATH"
 Des exemples de scripts sont disponibles dans le dossier scripts des sources ici-présentes.
 
 ### Exemples :
-![01](https://user-images.githubusercontent.com/48289933/150208006-e48bb97d-a754-47b0-ac8f-a8050734962f.png)
+![01](https://user-images.githubusercontent.com/48289933/150758696-587cdf89-2abb-4936-8792-16f18d5f1a03.png)
 
-Le dossier n'affiche qu'un seul élément en fonction de son nom et le met dans un cadre.
+Le dossier Animaux affiche seulement une image portant un nom spécifique et le met en valeur dans un cadre.
 
-Le fichier mkv affiche une image qu'il contient.
+Le fichier Test.mkv affiche une image qu'il contient.
+
+Le fichier Test2.mkv affiche une icône personnalisée via le fichier keneric.conf.
 
 
 ### Plus d'informations :
@@ -173,11 +175,13 @@ echo "$PATH"
 Examples of scripts are available in the scripts folder of the sources here.
 
 ### Examples:
-![01](https://user-images.githubusercontent.com/48289933/150208006-e48bb97d-a754-47b0-ac8f-a8050734962f.png)
+![01](https://user-images.githubusercontent.com/48289933/150758696-587cdf89-2abb-4936-8792-16f18d5f1a03.png)
 
-The folder displays only one item based on its name and puts it in a frame.
+The Animaux folder displays only one item based on its name and puts it in a frame.
 
-The mkv file displays an image it contains.
+The Test.mkv file displays an image it contains.
+
+The Test2.mkv file displays an custom icon via the keneric.conf file.
 
 ### More information:
  - The conf folder presents how the configuration file works and gives examples.
