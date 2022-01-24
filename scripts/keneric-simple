@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Utilisation : stripPicture FullName mime exportPicture
+# Paramètres : FullName mime exportPicture
 
 FullName="$1"
 MimeType="$2"
