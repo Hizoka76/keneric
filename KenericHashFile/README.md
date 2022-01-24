@@ -17,7 +17,7 @@ echo "$PATH"
 ```
 
 ### Utilisation :
-Il suffit de faire un clic droit sur l'élément (fichier ou dossier) puis de choisir "Keneric Actions" et enfin "Copie le hash md5 du fichier".
+Il suffit de faire un clic droit sur l'élément (fichier ou dossier) puis de choisir "Keneric Actions" et enfin "Copier le hash md5 du fichier".
 
 
 ## English version:
