@@ -10,11 +10,6 @@ Thumb="${ExportPicture##*/}"
 # Si on veut un peu mieux comprendre
 # echo "stripPicture $1 $2 $3 $Thumb" >> /tmp/hizo.txt
 
-
-# Si la vignette existe déjà, on ne fait rien, n'est pas sensé se produire
-[[ -e "${HOME}/.cache/thumbnails/large/${Thumb}.png" || -e "${HOME}/.cache/thumbnails/normal/${Thumb}.png" ]] && exit
-
-
 # En fonction du type des fichiers
 case "${MimeType}" in
     inode/directory)
