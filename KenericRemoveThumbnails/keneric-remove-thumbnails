@@ -28,7 +28,7 @@ function url_encode
         Char="${1:i:1}"
 
         # Si c'est un caractère à ne pas modifier
-        if [[ "${Char}" == [[:alnum:]-.,_~/:\(\)\&\!@\[\]] ]]
+        if [[ "${Char}" == [[:alnum:]-.,_~/:\(\)\&\!@\[\]\'] ]]
         then
             Thumb+="${Char}"
 
