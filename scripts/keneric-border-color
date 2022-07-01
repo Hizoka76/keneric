@@ -7,7 +7,7 @@
 ### Rien de nouveau ici ###
 ###########################
 
-# Utilisation : stripPicture FullName mime exportPicture
+# Utilisation : keneric FullName mime exportPicture
 
 FullName="$1"
 MimeType="$2"
@@ -15,7 +15,7 @@ ExportPicture="$3"
 Thumb="${ExportPicture##*/}"
 
 # Si on veut un peu mieux comprendre
-# echo "stripPicture $1 $2 $3 $Thumb" >> /tmp/hizo.txt
+# echo "keneric $1 $2 $3 $Thumb" >> /tmp/hizo.txt
 
 
 # Si la vignette existe déjà, on ne fait rien, n'est pas sensé se produire
