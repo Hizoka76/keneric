@@ -25,7 +25,7 @@ function Dependencies
 {
     # ${@} : Les arguments doivent être de type : commande:paquet ou commande (si paquet = commande)
 
-    local Command
+    local Command 
 
     # Vérification des dépendances
     for Command in "${@}"
