@@ -3,9 +3,9 @@
 #############
 ## Version ##
 #############
-# v0.4 - 22/01/19
+# v0.5 - 22/06/14 : Ajout des encadrés des mkv
 
-# Paramètres : FullName mime exportPicture
+# Utilisation : keneric FullName mime exportPicture
 
 FullName="$1"
 MimeType="$2"
@@ -13,7 +13,11 @@ ExportPicture="$3"
 Thumb="${ExportPicture##*/}"
 
 # Si on veut un peu mieux comprendre
-# echo "stripPicture $1 $2 $3 $Thumb" >> /tmp/hizo.txt
+# echo "keneric $1 $2 $3 $Thumb" >> /tmp/hizo.txt
+
+
+# Si la vignette existe déjà, on ne fait rien, n'est pas sensé se produire
+[[ -e "${HOME}/.cache/thumbnails/large/${Thumb}.png" || -e "${HOME}/.cache/thumbnails/normal/${Thumb}.png" ]] && exit
 
 
 function Dependencies
@@ -31,7 +35,6 @@ function Dependencies
 
     return 0
 }
-
 
 
 # En fonction du type des fichiers
@@ -125,9 +128,53 @@ case "${MimeType}" in
         # Suppression de l'image
         rm "/tmp/thumb_icon.png"
 
-        exit ;;
+        exit 0 ;;
 
-    video/x-matroska)
+
+    video/x-matroska|video/x-matroska-3d)
+        # Gestion des encadrements de couleur en fonction de la résolution
+        # Pour les vidéos en 3D
+        if [[ "${MimeType}" == "video/x-matroska-3d" ]]
+        then
+            BorderColor="purple"
+
+        # Pour les vidéos normales
+        else
+            if Dependencies mkvinfo
+            then
+                # Résolution de la vidéo, utilisation d'une liste en cas de vidéos multiples
+                Resolution=($(LANG=C.UTF-8 mkvinfo "${FullName}" | sed -n "/+ Pixel width:.*/ s/.* //p"))
+
+                # Si c'est de la 3D malgré l'extension
+                if LANG=C.UTF-8 mkvinfo "${FullName}" | grep -q "Stereo mode"
+                then
+                    BorderColor="purple"
+
+                # Si c'est de la 4K
+                elif (( ${Resolution[0]} >= 3000 ))
+                then
+                    BorderColor="black"
+
+                # Si c'est de la HD
+                elif (( ${Resolution[0]} >= 1400 ))
+                then
+                    BorderColor="navy"
+
+                # Si c'est de la LD
+                elif (( ${Resolution[0]} < 1400 ))
+                then
+                    BorderColor="grey"
+
+                # Sinon
+                else
+                    BorderColor="white"
+                fi
+
+            else
+                BorderColor="white"
+            fi
+        fi
+
         # Si les dépendances sont présentes, on va rechercher une image dans le mkv
         if Dependencies jq mkvmerge mkvextract
         then
@@ -155,10 +202,8 @@ case "${MimeType}" in
                     # Si le fichier a un nom spécifique
                     if [[ "${Name,,}" == +(cover|front|dvd).* ]]
                     then
-                        mkvextract attachments "${FullName}" ${Id}:"/tmp/${Name}" &>/dev/null
-                        convert -resize "256x256>" "/tmp/${Name}" "${ExportPicture}"
-                        rm "/tmp/${Name}"
-                        exit 0
+                        ImageList=("${Id}:/tmp/${Name}")
+                        break
 
                     # Dans les autres cas, on la conserve
                     else
@@ -170,16 +215,43 @@ case "${MimeType}" in
             # Utilisation de la 1ere image trouvée
             if [[ ${ImageList[0]} ]]
             then
+                # Extraction de l'image
                 mkvextract attachments "${FullName}" ${ImageList[0]%%:*}:"${ImageList[0]#*:}" &>/dev/null
-                convert -resize "256x256>" "${ImageList[0]#*:}" "${ExportPicture}"
+
+                if Dependencies convert
+                then
+                    # Resize de l'image avec ajout d'une bordure
+                    convert -resize "256x256>" -bordercolor ${BorderColor} -border 5 "${ImageList[0]#*:}" "${ExportPicture}"
+
+                else
+                    # Sinon, c'est un simple renommage de fichier
+                    mv "${ImageList[0]#*:}" "${ExportPicture}"
+                fi
+
+                # Suppression de l'image extraite
                 rm "${ImageList[0]#*:}"
-                exit
+
+                exit 0
             fi
         fi
 
         # Si les dépendances ne sont pas bonnes ou qu'il n'y a pas d'image dans le mkv
+        Dependencies ffmpegthumbnailer && ffmpegthumbnailer -s 256 -i "${FullName}" -o "${ExportPicture}"
+
+        # Ajout d'une bordure
+        if Dependencies convert
+        then
+            convert -bordercolor ${BorderColor} -border 5 "${ExportPicture}" "${ExportPicture}"
+        fi
+
+        exit 0 ;;
+
+
+    # Toutes les autres vidéos
+    video/*)
+        # Si les dépendances ne sont pas bonnes ou qu'il n'y a pas d'image dans le mkv
         Dependencies ffmpegthumbnailer && ffmpegthumbnailer -f -s 256 -i "${FullName}" -o "${ExportPicture}"
 
-        exit ;;
+        exit 0 ;;
 esac
 
