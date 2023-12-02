@@ -1,0 +1,60 @@
+#!/bin/bash
+
+#############
+## Version ##
+#############
+# Création d'une jacquette pour les séries par ex, il faut un fichier de type ~ full.png
+
+# Utilisation : keneric FullName mime exportPicture
+
+FullName="$1"
+MimeType="$2"
+ExportPicture="$3"
+Thumb="${ExportPicture##*/}"
+
+# Si on veut un peu mieux comprendre
+# echo "keneric $1 $2 $3 $Thumb" >> /tmp/hizo.txt
+
+
+# Si la vignette existe déjà, on ne fait rien, n'est pas sensé se produire
+[[ -e "${HOME}/.cache/thumbnails/large/${Thumb}.png" || -e "${HOME}/.cache/thumbnails/normal/${Thumb}.png" ]] && exit
+
+
+function Dependencies
+{
+    # ${@} : Les arguments doivent être de type : commande:paquet ou commande (si paquet = commande)
+
+    local Command
+
+    # Vérification des dépendances
+    for Command in "${@}"
+    do
+        # Si la commande n'existe pas
+        [[ -z $(which ${Command}) ]] && return 1
+    done
+
+    return 0
+}
+
+
+# En fonction du type des fichiers
+case "${MimeType}" in
+    inode/directory)
+        Dependencies convert identify || exit 1
+
+        # S'il y a un fichier NoKeneric, on ne fait rien
+        Image="$(find "${FullName}" -maxdepth 1 ! -type d -iregex "${FullName/%\/}/\.?NoKeneric" -print -quit)"
+        [[ -f "${Image}" ]] && exit 0
+
+        # S'il y a un fichier full, on l'utilise comme icône
+        Image="$(find "${FullName}" -maxdepth 1 ! -type d -iregex "${FullName/%\/}/\.?full.\(jpg\|png\|jpeg\|webp\)" -print -quit)"
+
+        if [[ -f "${Image}" ]]
+        then
+            # Création d'une icône de taille max 512 px avec double bordure
+            convert -resize "512x512>" -bordercolor black -border 5 -bordercolor white -border 3 -colors 96 "${Image}" "${ExportPicture}"
+        fi
+
+        exit 0 ;;
+esac
+
