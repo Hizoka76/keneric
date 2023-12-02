@@ -88,6 +88,12 @@ Le fichier Test.mkv affiche une image qu'il contient.
 
 Le fichier Test2.mkv affiche une icône personnalisée via le fichier keneric.conf.
 
+![border-exemples](https://github.com/Hizoka76/keneric/assets/48289933/91746874-6615-4f0d-8be2-cd2ebd41c4a6)
+Adaptation du contour de la vidéo à sa qualité : script/keneric-border-color
+
+![05](https://github.com/Hizoka76/keneric/assets/48289933/f8974a59-eb0f-4495-b11c-d66c09244593)
+Dossier d'un album musical : script/keneric-disk
+
 
 ### Plus d'informations :
  - Le dossier conf présente le fonctionnement du fichier de configuration et donne des exemples.
@@ -185,6 +191,12 @@ The Animaux folder displays only one item based on its name and puts it in a fra
 The Test.mkv file displays an image it contains.
 
 The Test2.mkv file displays an custom icon via the keneric.conf file.
+
+![border-exemples](https://github.com/Hizoka76/keneric/assets/48289933/91746874-6615-4f0d-8be2-cd2ebd41c4a6)
+Adapt video contour to video quality: script/keneric-border-color
+
+![05](https://github.com/Hizoka76/keneric/assets/48289933/f8974a59-eb0f-4495-b11c-d66c09244593)
+Musical album folder: script/keneric-disk
 
 ### More information:
  - The conf folder presents how the configuration file works and gives examples.
