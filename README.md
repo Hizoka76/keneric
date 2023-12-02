@@ -96,6 +96,9 @@ Adaptation du contour de la vidéo à sa qualité : script/keneric-border-color
 
 Dossier d'un album musical : script/keneric-disk
 
+![06](https://github.com/Hizoka76/keneric/assets/48289933/61d04a94-cae2-449a-a022-1f0ad2a1c625)
+
+Dossier d'une saison d'une série : script/keneric-full
 
 ### Plus d'informations :
  - Le dossier conf présente le fonctionnement du fichier de configuration et donne des exemples.
@@ -201,6 +204,10 @@ Adapt video contour to video quality: script/keneric-border-color
 ![05](https://github.com/Hizoka76/keneric/assets/48289933/f8974a59-eb0f-4495-b11c-d66c09244593)
 
 Musical album folder: script/keneric-disk
+
+![06](https://github.com/Hizoka76/keneric/assets/48289933/61d04a94-cae2-449a-a022-1f0ad2a1c625)
+
+Series season file: script/keneric-full
 
 ### More information:
  - The conf folder presents how the configuration file works and gives examples.
