@@ -81,20 +81,20 @@ Des exemples de scripts sont disponibles dans le dossier scripts des sources ici
 
 ### Exemples :
 #### Script Directory-Covert : Avec un fichier cover dans le dossier.
-![Directory-Cover](readme/Directory-Cover.png)
+![Directory-Cover](https://github.com/Hizoka76/keneric/tree/master/img/Directory-Cover.png)
 
 
 #### Script Directory-Disk : Avec un fichier disk dans le dossier.
-![Directory-Disk](readme/Directory-Disk.png)
+![Directory-Disk](https://github.com/Hizoka76/keneric/tree/master/img/Directory-Disk.png)
 
 
 #### Script Directory-Full : Avec un fichier full dans le dossier.
-![Directory-Full](readme/Directory-Full.png)
+![Directory-Full](https://github.com/Hizoka76/keneric/tree/master/img/Directory-Full.png)
 
 
 #### Script Video-mkv-Cover : Avec un fichier une image dans un fichier mkv.
 La couleur du contour s'adapte à la résolution de la vidéo et en cas de 3D.
-![Video-mkv-Cover](readme/Video-mkv-Cover.png)
+![Video-mkv-Cover](https://github.com/Hizoka76/keneric/tree/master/img/Video-mkv-Cover.png)
 
 
 ### Plus d'informations :
