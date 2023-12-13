@@ -81,20 +81,20 @@ Des exemples de scripts sont disponibles dans le dossier scripts des sources ici
 
 ### Exemples :
 #### Script Directory-Covert : Avec un fichier cover dans le dossier.
-![Directory-Cover](Directory-Cover.png)
+![Directory-Cover](readme/Directory-Cover.png)
 
 
 #### Script Directory-Disk : Avec un fichier disk dans le dossier.
-![Directory-Disk](Directory-Disk.png)
+![Directory-Disk](readme/Directory-Disk.png)
 
 
 #### Script Directory-Full : Avec un fichier full dans le dossier.
-![Directory-Full](Directory-Full.png)
+![Directory-Full](readme/Directory-Full.png)
 
 
 #### Script Video-mkv-Cover : Avec un fichier une image dans un fichier mkv.
 La couleur du contour s'adapte à la résolution de la vidéo et en cas de 3D.
-![Video-mkv-Cover](Video-mkv-Cover.png)
+![Video-mkv-Cover](readme/Video-mkv-Cover.png)
 
 
 ### Plus d'informations :
