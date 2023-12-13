@@ -81,20 +81,21 @@ Des exemples de scripts sont disponibles dans le dossier scripts des sources ici
 
 ### Exemples :
 #### Script Directory-Covert : Avec un fichier cover dans le dossier.
-![Directory-Cover](https://github.com/Hizoka76/keneric/tree/master/readme/Directory-Cover.png)
+![Directory-Cover](https://github.com/Hizoka76/keneric/assets/48289933/4685acfc-0522-43e2-a89f-7ddab2dee9c6)
 
 
 #### Script Directory-Disk : Avec un fichier disk dans le dossier.
-![Directory-Disk](https://github.com/Hizoka76/keneric/tree/master/readme/Directory-Disk.png)
+![Directory-Disk](https://github.com/Hizoka76/keneric/assets/48289933/acf3a237-c510-457a-b00f-c9013a2acb7c)
 
 
 #### Script Directory-Full : Avec un fichier full dans le dossier.
-![Directory-Full](https://github.com/Hizoka76/keneric/tree/master/readme/Directory-Full.png)
+![Directory-Full](https://github.com/Hizoka76/keneric/assets/48289933/9c3fa73f-0155-4806-b94c-be50a15717c4)
 
 
 #### Script Video-mkv-Cover : Avec un fichier une image dans un fichier mkv.
 La couleur du contour s'adapte à la résolution de la vidéo et en cas de 3D.
-![Video-mkv-Cover](https://github.com/Hizoka76/keneric/tree/master/readme/Video-mkv-Cover.png)
+![Video-mkv-Cover](https://github.com/Hizoka76/keneric/assets/48289933/18b47874-8ca2-4fd2-9e87-1597c8aac23e)
+
 
 
 ### Plus d'informations :
@@ -187,17 +188,17 @@ Examples of scripts are available in the scripts folder of the sources here.
 
 ### Examples:
 #### Directory-Covert Script: With a cover file in the folder.
-![Directory-Cover](Directory-Cover.png)
+![Directory-Cover](https://github.com/Hizoka76/keneric/assets/48289933/4685acfc-0522-43e2-a89f-7ddab2dee9c6)
 
 #### Directory-Disk Script: With a disk file in the folder.
-![Directory-Disk](Directory-Disk.png)
+![Directory-Disk](https://github.com/Hizoka76/keneric/assets/48289933/acf3a237-c510-457a-b00f-c9013a2acb7c)
 
 #### Directory-Full Script: With a full file in the folder.
-![Directory-Full](Directory-Full.png)
+![Directory-Full](https://github.com/Hizoka76/keneric/assets/48289933/9c3fa73f-0155-4806-b94c-be50a15717c4)
 
 #### Video-mkv-Cover Script: With a file an image in an mkv file.
 The color of the outline adapts to the resolution of the video and in case of 3D.
-![Video-mkv-Cover](Video-mkv-Cover.png)
+![Video-mkv-Cover](https://github.com/Hizoka76/keneric/assets/48289933/18b47874-8ca2-4fd2-9e87-1597c8aac23e)
 
 ### More information:
  - The conf folder presents how the configuration file works and gives examples.
