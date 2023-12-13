@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Service
+Name=Keneric Folder Type
+
+X-KDE-ServiceTypes=ThumbCreator
+MimeType=inode/directory;
+
+X-KDE-Library=keneric
+CacheThumbnail=true

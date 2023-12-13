@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Service
+Name=Keneric Video MKV Type
+
+X-KDE-ServiceTypes=ThumbCreator
+MimeType=video/x-matroska;video/x-matroska-3d;application/x-matroska;application/x-matroska-3d;
+
+X-KDE-Library=keneric
+CacheThumbnail=true

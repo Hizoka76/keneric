@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Service
+Name=Keneric Video Type
+
+X-KDE-ServiceTypes=ThumbCreator
+MimeType=video/*;
+
+X-KDE-Library=keneric
+CacheThumbnail=true
