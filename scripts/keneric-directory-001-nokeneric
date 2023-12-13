@@ -1,0 +1,16 @@
+#!/bin/bash
+
+##############################
+## Version 0.1 - 2023/12/02 ##
+##############################
+# Bloqueur de travail si le dossier contient un fichier (.)NoKeneric
+
+# Recherche des fichiers NoKeneric
+Image=$(SearchInFolder ".?NoKeneric")
+
+# Si un fichier a été trouvé, on stoppe le script
+if [[ -f "${Image}" ]]
+then
+    LogFileMessage "NoKeneric file found : ${Image}"
+    exit 0
+fi

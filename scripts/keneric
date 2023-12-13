@@ -1,0 +1,192 @@
+#!/bin/bash
+
+#############
+## Version ##
+#############
+# v0.7 - 2023/12/09 :
+    # Ajout de la fonction SearchInFolder.
+    # Mise en place des source des scripts.
+    # Automatisation du chargement des sources avec la fonction SourceLoader.
+    # Amélioration du système du fichier log avec (en autre) LogFileMessage.
+
+# v0.6 - 2023/09/07 :
+    # Création d'un fichier log dans le dossier tmp.
+
+# v0.5 - 2022/06/14 :
+    # Ajout des encadrés des mkv.
+
+
+#################
+## Utilisation ##
+#################
+# keneric FullName mime exportPicture
+
+# Adresse complète du fichier/dossier
+FullName="${1}"
+
+# Mimetype du fichier/dossier
+MimeType="${2}"
+
+# Adresse attendue de la vignette du fichier/dossier
+ExportPicture="${3}"
+
+# Nom de la vignette attendue
+Thumb="${ExportPicture##*/}"
+
+
+###################################
+## Emplacement du script keneric ##
+###################################
+Source="${0}"
+
+# Si le fichier est un lien
+while [[ -h "${Source}" ]]
+do
+  Folder="${Source%\/*}"
+  Source="$(readlink "${Source}")"
+
+  # Si c'est un lien relatif, on en fait un lien complet
+  [[ ${Source} != /* ]] && Source="${Folder}/${Source}"
+done
+
+# Emplacement du script
+ExecFolder="$(cd -P "${Source%/*}" >/dev/null 2>&1 && pwd)"
+
+
+#################
+## Fichier log ##
+#################
+# Pour activer le mode log, il faut passer LogEnabled à 1
+# Attention ! Il ne faut pas laisser ce mode actif sans raison car cela va créer un gros fichier log !
+LogEnabled=0
+(( LogEnabled )) && LogRedirection="/tmp/keneric.log" || LogRedirection="/dev/null"
+
+echo -e "-----\n${ExecFolder}/keneric ${1} ${2} ${3} ${Thumb}" >> "${LogRedirection}"
+
+
+##################
+## Vérification ##
+##################
+# Si la vignette existe déjà, on ne fait rien, ce n'est pas sensé se produire
+[[ -e "${HOME}/.cache/thumbnails/large/${Thumb}.png" || -e "${HOME}/.cache/thumbnails/normal/${Thumb}.png" ]] && exit
+
+
+#########################
+## Fonctions partagées ##
+#########################
+# Fonction vérifiant la présence des dépendances
+function Dependencies
+{
+    # ${@} : Les arguments doivent être de type : commande:paquet ou commande (si paquet = commande)
+
+    local Command
+
+    # Vérification des dépendances
+    for Command in "${@}"
+    do
+        # Si la commande n'existe pas
+        if [[ -z $(which ${Command%%:*}) ]]
+        then
+            LogFileMessage "Command ${Command%%:*} from package ${Command##*:} non found."
+            return 1
+        fi
+    done
+
+    return 0
+}
+
+
+# Fonction de recherche d'un fichier dans un dossier
+function SearchInFolder
+{
+    # $1 : Regex de recherche des fichiers
+    [[ ! ${1} ]] && return
+
+    local Image
+
+    # Explications des paramètres de find :
+        # -maxdepth 1 : Se limite au dossier, ne descend pas dans l'arborescence
+        # -type f : Ne travaille que sur les fichiers
+        # -iregex : Recherche les fichiers correspondants à la regex passée en argument, pas de prise en compte de la casse
+        # -print : Affiche le résultat
+        # -quit : Arrêt de la commande au 1er fichier trouvé
+
+    Image="$(find "${FullName}" -maxdepth 1 -type f -iregex "${FullName/%\/}/${1}" -print -quit)"
+
+    # Renvoi de l'image trouvée
+    [[ -f "${Image}" ]] && echo "${Image}"
+}
+
+
+# Fonction de chargement des sources
+function SourceLoader
+{
+    # $1 : Base de nom des scripts, ex : folder, video
+
+    # Recherche tous les scripts de type keneric-$1- et les tri par nom ce qui permet de définir un ordre de priorité dans les scripts
+    mapfile -td '' KenericScripts < <(find "${ExecFolder}" -mindepth 1 -maxdepth 1 -iname "keneric-${1}-[0-9][0-9][0-9]-*" -print0 | sort -uz)
+
+    # Chargement de chaque script
+    for KenericScript in "${KenericScripts[@]}"
+    do
+        source "${KenericScript}"
+    done
+}
+
+
+# Fonction d'envoi de message au fichier log si actif
+function LogFileMessage
+{
+    # $1 : Message
+    # ${BASH_SOURCE[0]##*/} correspond au nom du script sourcé
+    echo "${BASH_SOURCE[0]##*/} : ${1}" >> "${LogRedirection}"
+}
+
+
+######################################
+## Chargement des scripts adéquates ##
+######################################
+# Chargement des scripts en se basant sur le MimeType
+    # Ex : video/x-matroska => video-x-matroska => Recherche des scripts nommés keneric-video-x-matroska-[0-9][0-9][0-9]-
+    # Ex : audio/ac3 => audio-ac3 => Recherche des scripts nommés keneric-audio-ac3-[0-9][0-9][0-9]-
+SourceLoader "${MimeType//\//-}"
+
+# Chargement des scripts en se basant sur le 2e élément du MimeType
+    # Ex : video/x-matroska => x-matroska => Recherche des scripts nommés keneric-x-matroska-[0-9][0-9][0-9]-
+    # Ex : audio/ac3 => audio => Recherche des scripts nommés keneric-ac3-[0-9][0-9][0-9]-
+SourceLoader "${MimeType##*/}"
+
+# Chargement des scripts en se basant sur le 1er élément du MimeType
+    # Ex : video/x-matroska => video => Recherche des scripts nommés keneric-video-[0-9][0-9][0-9]-
+    # Ex : audio/ac3 => audio => Recherche des scripts nommés keneric-audio-[0-9][0-9][0-9]-
+SourceLoader "${MimeType%%/*}" ;;
+
+
+##################################
+## Informations sur les scripts ##
+##################################
+# Ils peuvent utiliser les fonctions partagées :
+    # Dependencies : À utiliser pour vérifier des dépendances avant d'utiliser les commandes liées.
+    # SearchInFolder : Utile pour la recherche d'un fichier dans un dossier
+    # LogFileMessage : Fonction d'envoi de message au fichier log s'il est actif.
+        # Ex de message : LogFileMessage "NoKeneric file found : ${Image}"
+
+# Ils peuvent utiliser les variables globales :
+    # FullName : Adresse du fichier/dossier.
+    # MimeType : Mimetype du fichier/dossier.
+    # ExportPicture : Adresse de la vignette du fichier/dossier qui sera reprise par keneric.
+    # Thumb : Nom de la vignette attendue
+    # ExecFolder : Dossier du script keneric.
+    # LogRedirection : Fonction d'envoi de message retour de commande au fichier log s'il est actif.
+        # Ex de message d'erreur : convert ... 2>> "${LogRedirection}"
+
+# Toujours déclarer les variables (avec leurs valeurs par défaut) avant de les tester afin d'éviter qu'un précédent script ait créés des variables de même nom.
+
+# Un script n'ayant pas créé la vignette ne doit pas faire de return ou d'exit.
+# Un script ayant créé la vignette doit l'avoir exporté vers $ExportPicture et faire un exit 0 afin d'arrêter keneric.
+
+# Il n'est pas obligatoire que les scripts soient exécutables.
+
+# Si le script touche un sous type de MimeType, il faut encadrer le code du script dans un IF qui vérifie le MimeType.
+
+# Les noms des scripts sont importants car avant d'être chargés, ils sont triés par leur nom, ce qui crée un ordre d'exécution des scripts.

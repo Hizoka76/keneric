@@ -1,0 +1,27 @@
+#!/bin/bash
+
+##############################
+## Version 0.1 - 2023/12/02 ##
+##############################
+# Création de dossier CD pour les fichiers ~ disk.png, nécessite le fichier baseDisk.png
+
+# Adresse de l'image avec le CD
+BaseDisk="${ExecFolder}/baseDisk.png"
+
+# Recherche des fichiers disk avec une extension jpg|png|jpeg|webp
+Image=$(SearchInFolder "\.?disk.\(jpg\|png\|jpeg\|webp\)")
+
+# Si une image a été trouvée, que le fichier BaseDisk existe qu'il y a la commande convert
+if [[ -f "${Image}" && -f "${BaseDisk}" ]] && Dependencies convert:imagemagick
+then
+    LogFileMessage "disk file found : ${Image}"
+
+    # Il faut obligatoirement mettre une extension png pour le convert
+    convert -size 228x228 canvas:transparent \( "${Image}" -resize 200!x200! -bordercolor black -border 2 \) -geometry +0+12 -composite "${BaseDisk}" -geometry +166+48 -composite -format png "${ExportPicture}.png" 2>> "${LogRedirection}"
+
+    # Suppression de l'extension
+    mv "${ExportPicture}.png" "${ExportPicture}" 2>> "${LogRedirection}"
+
+    # Si une vignette a été créée, on stoppe le script
+    exit 0
+fi

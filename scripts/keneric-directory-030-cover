@@ -1,0 +1,122 @@
+#!/bin/bash
+
+##############################
+## Version 0.1 - 2023/12/02 ##
+##############################
+# Reprise du dossier du thème et fusion avec un fichier de type folder|front|cover|icon
+
+# Le résultat diffère si l'image à de la transparence :
+    # Une image avec transparence sera fusionnée (en conservant sa transparence) avec l'icône par défaut de dossier du thème
+    # Une image sans transparence aura un petit cadre noir et sera fusionnée avec l'icône par défaut de dossier du thème
+
+
+# Variable indiquant si on stoppe
+Stop=0
+
+# Recherche des fichiers folder|front|cover|icon avec une extension jpg|png|jpeg|webp
+Image=$(SearchInFolder "\.?\(folder\|front\|cover\|icon\).\(jpg\|png\|jpeg\|webp\)")
+
+# Si une image a été trouvée et qu'il y a la commande convert
+if [[ -f "${Image}" ]] && Dependencies convert:imagemagick
+then
+    LogFileMessage "Image founded : ${Image}"
+
+    # Pour éviter de convertir l'icône du dossier par défaut du thème à chaque fois
+    if [[ ! -f "/tmp/directory_icon.png" ]]
+    then
+        # Thème utilisé
+        Theme=$(sed -n "/Name=/ s/.*=//p" "/usr/share/icons/default/index.theme")
+
+        # Nom de l'icône utilisée pour les dossiers
+        IconName=$(sed -n "/icon name/ s@.*=\"\(.*\)\".*@\1@p" "${HOME}/.local/share/mime/inode/directory.xml" 2>/dev/null)
+        [[ -z "${IconName}" ]] && IconName=$(sed -n "/icon name/ s@.*=\"\(.*\)\".*@\1@p" "/usr/share/mime/inode/directory.xml")
+
+        # Icône, doit fonctionner dans le cas des png et des svg
+        # On conserve l'image la plus lourde donc logiquement la meilleure qualité '%s %p\n
+            # => Le problème c'est que la taille affichée est celle du fichier et non des liens
+        Icon="$(find "/usr/share/icons/${Theme,,}/mimetypes/" -iname "${IconName}.*" -printf '%p\n' | sort -nr | head -n 1)"
+
+        [[ -z "${Icon}" ]] && Icon="$(find "/usr/share/icons/${Theme,,}/" -iname "${IconName}.*" -printf '%p\n' | sort -nr | head -n 1)"
+
+        Icon="${Icon/#* }"
+
+        LogFileMessage "Theme : ${Theme}"
+        LogFileMessage "Icon : ${Icon}"
+
+        # Si une icône a été trouvée
+        if [[ -f "${Icon}" ]]
+        then
+            # Extension du fichier
+            Ext="${Icon##*.}"
+
+            # Si c'est un svg, il faut le convertir en png
+            if [[ "${Ext,,}" == "svg" ]]
+            then
+                # Meilleur résultat avec ksvgtopng5
+                if Dependencies ksvgtopng5:kde-cli-tools
+                then
+                    LogFileMessage "svg : ksvgtopng5 used."
+                    ksvgtopng5 256 256 "${Icon}" "/tmp/directory_icon.png" 2>> "${LogRedirection}"
+
+                # Utilisation de rsvg-convert qui donne un résultat bien plus propre pour une taille moindre que convert
+                elif Dependencies rsvg-convert:librsvg2-bin
+                then
+                    LogFileMessage "svg : rsvg-convert used."
+                    rsvg-convert "${Icon}" -f png -a -w 256 -o "/tmp/directory_icon.png" 2>> "${LogRedirection}"
+
+                # Imagemagick donne un mauvais résultat...
+                else
+                    LogFileMessage "svg : convert used."
+                    convert -resize "256x256" -format png "${Icon}" "/tmp/directory_icon.png" 2>> "${LogRedirection}"
+                fi
+
+            # Sinon on redimensionne l'image en 256px si besoin
+            else
+                LogFileMessage "convert used."
+                convert -resize "256x256>" "${Icon}" "/tmp/directory_icon.png" 2>> "${LogRedirection}"
+            fi
+
+            # Arrêt du travail si l'icône temporaire n'existe pas
+            [[ ! -f "/tmp/directory_icon.png" ]] && Stop=1
+
+        # Sinon, on stoppera le travail juste après
+        else
+            Stop=1
+        fi
+    fi
+
+    # Ne continue que Stop vaut toujours 0
+    if ((! Stop))
+    then
+        LogFileMessage "Thumbnail creation..."
+
+        # Création de la vignette
+        # -resize "212x124>" : La taille max de la sous image soit être de 212 * 124 pour qu'elle rentre bien dans l'icône de breeze
+        # -bordercolor black -border 1 : Ajout d'un cadre noir pour le style
+        # -geometry +30+90 : Place l'image dans l’icône du dossier
+        # -colors 255 : Diminution de la qualité de l'image pour diminuer le poids
+
+        # Il ne faut pas aplatir les images ayant un canal alpha avec colors
+        [[ $(identify -format '%A' "${Image}") == "False" ]] && Arg="-bordercolor black -border 1 -colors 96"
+
+        convert -resize "212x124>" ${Arg} "${Image}" "/tmp/thumb_icon.png" 2>> "${LogRedirection}"
+
+        if [[ -f "/tmp/thumb_icon.png" ]]
+        then
+            # Calcul l'emplacement de la sous image
+            ImageSize=$(identify -format "%wx%h" "/tmp/thumb_icon.png")
+            DirectorySize=$(identify -format "%wx%h" "/tmp/directory_icon.png")
+            w=$(( (${DirectorySize%x*} - ${ImageSize%x*}) / 2 ))
+            h=$(( (${DirectorySize#*x} - ${ImageSize#*x}) / 2 + 30 )) # Décalage de 30px pour bien le placer
+
+            # Empilement des 2 images
+            composite -compose src-over "/tmp/thumb_icon.png" "/tmp/directory_icon.png" -geometry +${w}+${h} -format png "${ExportPicture}" 2>> "${LogRedirection}"
+
+            # Suppression de l'image
+            rm "/tmp/thumb_icon.png" 2>> "${LogRedirection}"
+
+            # Si une vignette a été créée, on stoppe le script
+            exit 0
+        fi
+    fi
+fi

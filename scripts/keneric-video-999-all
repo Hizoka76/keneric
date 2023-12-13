@@ -1,0 +1,18 @@
+#!/bin/bash
+
+##############################
+## Version 0.1 - 2023/12/02 ##
+##############################
+# Utilisation de ffmpegthumbnailer pour toutes les types de vidéo
+
+# Si les dépendances ne sont pas bonnes ou qu'il n'y a pas d'image dans le mkv
+if Dependencies ffmpegthumbnailer
+then
+    LogFileMessage "ffmpegthumbnailer used."
+
+    # Extraction d'une image avec ffmpegthumbnailer
+    ffmpegthumbnailer -f -s 256 -i "${FullName}" -o "${ExportPicture}" 2>> "${LogRedirection}"
+
+    # Si une vignette a été créée, on stoppe le script
+    exit 0
+fi

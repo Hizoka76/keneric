@@ -1,0 +1,129 @@
+#!/bin/bash
+
+##############################
+## Version 0.1 - 2023/12/02 ##
+##############################
+# Affichage d'une image contenue dans les fichiers mkv avec mise en place d'un encadrement de couleur en fonction de la résolution de la vidéo.
+
+# Ne traite que les fichiers mkv, important à préciser car le script est chargé pour toutes les vidéos
+if [[ "${MimeType}" == @(video/x-matroska|video/x-matroska-3d) ]]
+then
+    # Pour les vidéos en 3D
+    if [[ "${MimeType}" == @(application/x-matroska-3d|video/x-matroska-3d) ]]
+    then
+        BorderColor="purple"
+
+    # Pour les vidéos normales
+    else
+        # Couleur par défaut
+        BorderColor="white"
+
+        # Utilisation de mkvinfo pour déterminer la résolution
+        if Dependencies mkvinfo:mkvtoolnix
+        then
+            # Résolution de la vidéo, utilisation d'une liste en cas de vidéos multiples
+            Resolution=($(LANG=C.UTF-8 mkvinfo "${FullName}" | sed -n "/+ Pixel width:.*/ s/.* //p"))
+
+            # Si c'est de la 3D malgré l'extension
+            if LANG=C.UTF-8 mkvinfo "${FullName}" | grep -q "Stereo mode"
+            then
+                BorderColor="purple"
+
+            # Si c'est de la 4K
+            elif (( ${Resolution[0]} >= 2200 ))
+            then
+                BorderColor="black"
+
+            # Si c'est de la HD
+            elif (( ${Resolution[0]} >= 1400 ))
+            then
+                BorderColor="navy"
+
+            # Si c'est de la LD
+            elif (( ${Resolution[0]} < 1400 ))
+            then
+                BorderColor="grey"
+            fi
+        fi
+    fi
+
+    LogFileMessage "BorderColor : ${BorderColor}"
+
+    # Si les dépendances sont présentes, on va rechercher une image dans le mkv
+    if Dependencies jq mkvmerge mkvextract
+    then
+        # Récupération de la liste des fichiers joints
+        mapfile -td 'µ' jsonValues < <(mkvmerge -J "${FullName}" | jq -r '.attachments | to_entries|map("\(.value)µ")|.[]')
+        unset jsonValues["-1"]
+
+        # Boucle recherchant certaines images
+        for FichierJoint in "${jsonValues[@]}"
+        do
+            # Récupération du nom de la piste
+            [[ "${FichierJoint}" =~ file_name.:.([^\"]+) ]]
+            Name="${BASH_REMATCH[1]}"
+
+            # Récupération de l'id de la piste
+            [[ "${FichierJoint}" =~ id.:([0-9]+) ]]
+            Id="${BASH_REMATCH[1]}"
+
+            # Si on a pas pu récupérer l'id du fichier joint
+            [[ -z ${Id} ]] && continue
+
+            # Si c'est une image
+            if [[ "${Name,,}" == *.+(jpg|jpeg|png|webp|gif) ]]
+            then
+                # Si le fichier a un nom spécifique de cover, il sera utilisé
+                if [[ "${Name,,}" == +(cover|front|dvd).* ]]
+                then
+                    ImageList=("${Id}:/tmp/${Name}")
+                    break
+
+                # Dans les autres cas, on le conserve et on continue à la recherche d'un cover
+                else
+                    ImageList+=("${Id}:/tmp/${Name}")
+                fi
+            fi
+        done
+
+        # Utilisation de la 1ere image trouvée (cover ou 1ere si pas cover)
+        if [[ ${ImageList[0]} ]]
+        then
+            LogFileMessage "ImageList[0] : ${ImageList[0]}"
+
+            # Extraction de l'image
+            mkvextract attachments "${FullName}" ${ImageList[0]%%:*}:"${ImageList[0]#*:}" > /dev/null 2>> "${LogRedirection}"
+
+            # Resize de l'image avec ajout d'une bordure grâce à convert
+            if Dependencies convert:imagemagick
+            then
+                convert -resize "512x512>" -bordercolor ${BorderColor} -border 5 "${ImageList[0]#*:}" "${ExportPicture}" 2>> "${LogRedirection}"
+
+                # Suppression de l'image extraite
+                rm "${ImageList[0]#*:}" 2>> "${LogRedirection}"
+
+            # Sinon, c'est un simple renommage de fichier sans encadrement
+            else
+                mv "${ImageList[0]#*:}" "${ExportPicture}" 2>> "${LogRedirection}"
+            fi
+
+            # Si une vignette a été créée, on stoppe le script
+            exit 0
+        fi
+    fi
+
+    # Si les dépendances ne sont pas bonnes ou qu'il n'y a pas d'image dans le mkv, essaie d'utilisation de ffmpegthumbnailer
+    if Dependencies ffmpegthumbnailer
+    then
+        LogFileMessage "ffmpegthumbnailer used."
+
+        # Extraction d'une image avec ffmpegthumbnailer
+        ffmpegthumbnailer -s 256 -i "${FullName}" -o "${ExportPicture}" 2>> "${LogRedirection}"
+
+        # Ajout d'une bordure si convert est disponible
+        Dependencies convert:imagemagick && convert -bordercolor ${BorderColor} -border 5 "${ExportPicture}" "${ExportPicture}" 2>> "${LogRedirection}"
+
+        # Si une vignette a été créée, on stoppe le script
+        exit 0
+    fi
+fi

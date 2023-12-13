@@ -1,0 +1,21 @@
+#!/bin/bash
+
+##############################
+## Version 0.1 - 2023/12/02 ##
+##############################
+# Création d'une jaquette pour les séries par ex, il faut un fichier de type ~ full.png
+
+# Recherche des fichiers full avec une extension jpg|png|jpeg|webp
+Image=$(SearchInFolder "\.?full.\(jpg\|png\|jpeg\|webp\)")
+
+# Si une image a été trouvée et qu'il y a la commande convert
+if [[ -f "${Image}" ]] && Dependencies convert:imagemagick
+then
+    LogFileMessage "disk file found : ${Image}"
+
+    # Création d'une icône de taille max 512 px avec double bordure
+    convert -resize "512x512>" -bordercolor black -border 5 -bordercolor white -border 3 -colors 96 "${Image}" "${ExportPicture}" 2>> "${LogRedirection}"
+
+    # Si une vignette a été créée, on stoppe le script
+    exit 0
+fi
