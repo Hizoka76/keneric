@@ -80,25 +80,22 @@ echo "$PATH"
 Des exemples de scripts sont disponibles dans le dossier scripts des sources ici-présentes.
 
 ### Exemples :
-![01](https://user-images.githubusercontent.com/48289933/150758696-587cdf89-2abb-4936-8792-16f18d5f1a03.png)
+#### Script Directory-Covert : Avec un fichier cover dans le dossier.
+![Directory-Cover](Directory-Cover.png)
 
-Le dossier Animaux affiche seulement une image portant un nom spécifique et le met en valeur dans un cadre.
 
-Le fichier Test.mkv affiche une image qu'il contient.
+#### Script Directory-Disk : Avec un fichier disk dans le dossier.
+![Directory-Disk](Directory-Disk.png)
 
-Le fichier Test2.mkv affiche une icône personnalisée via le fichier keneric.conf.
 
-![border-exemples](https://github.com/Hizoka76/keneric/assets/48289933/91746874-6615-4f0d-8be2-cd2ebd41c4a6)
+#### Script Directory-Full : Avec un fichier full dans le dossier.
+![Directory-Full](Directory-Full.png)
 
-Adaptation du contour de la vidéo à sa qualité : script/keneric-border-color
 
-![05](https://github.com/Hizoka76/keneric/assets/48289933/f8974a59-eb0f-4495-b11c-d66c09244593)
+#### Script Video-mkv-Cover : Avec un fichier une image dans un fichier mkv.
+La couleur du contour s'adapte à la résolution de la vidéo et en cas de 3D.
+![Video-mkv-Cover](Video-mkv-Cover.png)
 
-Dossier d'un album musical : script/keneric-disk
-
-![06](https://github.com/Hizoka76/keneric/assets/48289933/61d04a94-cae2-449a-a022-1f0ad2a1c625)
-
-Dossier d'une saison d'une série : script/keneric-full
 
 ### Plus d'informations :
  - Le dossier conf présente le fonctionnement du fichier de configuration et donne des exemples.
@@ -189,25 +186,18 @@ echo "$PATH"
 Examples of scripts are available in the scripts folder of the sources here.
 
 ### Examples:
-![01](https://user-images.githubusercontent.com/48289933/150758696-587cdf89-2abb-4936-8792-16f18d5f1a03.png)
+#### Directory-Covert Script: With a cover file in the folder.
+![Directory-Cover](Directory-Cover.png)
 
-The Animaux folder displays only one item based on its name and puts it in a frame.
+#### Directory-Disk Script: With a disk file in the folder.
+![Directory-Disk](Directory-Disk.png)
 
-The Test.mkv file displays an image it contains.
+#### Directory-Full Script: With a full file in the folder.
+![Directory-Full](Directory-Full.png)
 
-The Test2.mkv file displays an custom icon via the keneric.conf file.
-
-![border-exemples](https://github.com/Hizoka76/keneric/assets/48289933/91746874-6615-4f0d-8be2-cd2ebd41c4a6)
-
-Adapt video contour to video quality: script/keneric-border-color
-
-![05](https://github.com/Hizoka76/keneric/assets/48289933/f8974a59-eb0f-4495-b11c-d66c09244593)
-
-Musical album folder: script/keneric-disk
-
-![06](https://github.com/Hizoka76/keneric/assets/48289933/61d04a94-cae2-449a-a022-1f0ad2a1c625)
-
-Series season file: script/keneric-full
+#### Video-mkv-Cover Script: With a file an image in an mkv file.
+The color of the outline adapts to the resolution of the video and in case of 3D.
+![Video-mkv-Cover](Video-mkv-Cover.png)
 
 ### More information:
  - The conf folder presents how the configuration file works and gives examples.
