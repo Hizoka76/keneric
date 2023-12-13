@@ -33,6 +33,12 @@
 //    the file needs to be in foldersAuthorized but not in foldersProhibited.
 
 
+// 2023/12/09 - v0.7 by Terence Belleguic
+//  Add path command : ~/.local/bin/
+
+// 2023/12/09 - v0.6 by Terence Belleguic
+//  log file created in tmp folder.
+
 // 2022/01/23 - v0.5 by Terence Belleguic
 //  Load of the thumbnail if exists.
 
@@ -55,6 +61,8 @@
 #include <QStandardPaths>
 #include <QCryptographicHash>
 #include <QSettings>
+#include <QTextStream>
+
 
 extern "C"
 {
@@ -173,7 +181,7 @@ bool Keneric::create(const QString& path, int /*width*/, int /*heigth*/, QImage&
                     folders << settingsValues.value(groupName + "/" + variableName).toString();
                 }
 
-                // S'il y a la clé foldersAuthorized
+                // S'il y a la clé itemsAuthorized
                 if (variableName == "itemsAuthorized")
                 {
                     // Variable bloquante
@@ -198,8 +206,8 @@ bool Keneric::create(const QString& path, int /*width*/, int /*heigth*/, QImage&
                     }
                 }
 
-                // S'il y a la clé foldersForbiden
-                else
+                // S'il y a la clé itemsProhibited
+                else if (variableName == "itemsProhibited")
                 {
                     // Pour chaque dossier à ne pas scanner / pour chaque valeur de la clé
                     for (const QString &folder : folders)
@@ -237,6 +245,13 @@ bool Keneric::create(const QString& path, int /*width*/, int /*heigth*/, QImage&
     // Vignette temporaire attendue par Keneric
     QString protoThumbnail(kenericDirectory + md5Hash);
 
+    // Récupération de l'environnement actuel
+    QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+
+    // Ajout du PATH ~/.local/bin/
+    QString customPath = QDir::homePath() + "/.local/bin/";
+    env.insert("PATH", env.value("PATH") + ":" + customPath);
+
     // Nom du programme appelé qui doit créé la vignette temporaire
     QString program="keneric";
 
@@ -246,6 +261,7 @@ bool Keneric::create(const QString& path, int /*width*/, int /*heigth*/, QImage&
 
     // Exécution du script avec les arguments puis attente de sa fin d'exécution
     QProcess *startAction = new QProcess(parent);
+    startAction->setProcessEnvironment(env); // Ajout du path local
     startAction->start(program, arguments);
     startAction->waitForFinished();
 
