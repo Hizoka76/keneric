@@ -34,13 +34,9 @@ Le déplacer dans le dossier **/usr/lib/x86_64-linux-gnu/qt5/plugins/**.
 #### Depuis le dépôt :
 Installer le ppa pour les dérivés d'Ubuntu et installé le paquet :
 ```
-sudo add-apt-repository ppa:hizo/keneric
+sudo add-apt-repository ppa:hizo/service-menus
 sudo apt-get update
 sudo apt install keneric
-```
-Pour installer tous les scripts :
-```
-sudo apt install keneric-scripts
 ```
 
 ### Principe de fonctionnement :
@@ -70,46 +66,51 @@ Une vignette finale est créée dans le dossier cache.
 Ce script est appelé par keneric.so qui lui fourni les arguments suivants :
  - Le fichier en attente de vignette.
  - Le mimetype du fichier en attente de vignette.
- - L'emplacement et le nom de la vignette que doit fournir le script à keneric.so.
+ - L'emplacement et le nom de la vignette que doit être retourner à keneric.so.
 
    => Le nom de la vignette est le même que celui qui sera utilisé pour la vignette finale.
 
-Ce script n'a pas d'extension afin de permettre l'utilisation de plusieurs langages comme python ou bash.
-
-Le script doit être déplacé dans un dossier du path :
+Le script doit être placé dans un dossier du path :
 ```
 echo "$PATH"
 ```
 
-Des exemples de scripts sont disponibles dans le dossier scripts des sources ici-présentes.
+#### Scripts sourcés par keneric :
+Afin de faciliter le développement de nouvelles possibilités, keneric source des sous-scripts.
+Toutes les explications sur le fonctionnement des sous-scripts dans le [dossier script](scripts).
+
+
+#### Fichier keneric.conf :
+Fichier ~/.config/keneric.conf.
+Il est utilisé par keneric.so et par le script keneric.
+
+Toutes les informations sur le fichier dans le [dossier config](config)
+
 
 ### Exemples :
 #### Script Directory-Covert : Avec un fichier cover dans le dossier.
-![Directory-Cover](https://github.com/Hizoka76/keneric/assets/48289933/4685acfc-0522-43e2-a89f-7ddab2dee9c6)
+![Directory-Cover](Directory-Cover.png)
 
 
 #### Script Directory-Disk : Avec un fichier disk dans le dossier.
-![Directory-Disk](https://github.com/Hizoka76/keneric/assets/48289933/acf3a237-c510-457a-b00f-c9013a2acb7c)
+![Directory-Disk](Directory-Disk.png)
 
 
 #### Script Directory-Full : Avec un fichier full dans le dossier.
-![Directory-Full](https://github.com/Hizoka76/keneric/assets/48289933/9c3fa73f-0155-4806-b94c-be50a15717c4)
+![Directory-Full](Directory-Full.png)
 
 
 #### Script Video-mkv-Cover : Avec un fichier une image dans un fichier mkv.
 La couleur du contour s'adapte à la résolution de la vidéo et en cas de 3D.
-![Video-mkv-Cover](https://github.com/Hizoka76/keneric/assets/48289933/18b47874-8ca2-4fd2-9e87-1597c8aac23e)
+![Video-mkv-Cover](Video-mkv-Cover.png)
 
 
-
-### Plus d'informations :
- - Le dossier conf présente le fonctionnement du fichier de configuration et donne des exemples.
+### Services :
  - Le dossier KenericHashFile présente un service menu copiant le hash d'un élément.
  - Le dossier KenericRemoveThumbnails présente un service menu supprimant les vignettes d'éléments.
  - Le dossier KenericCustomIcon présente un service menu facilitant l'utilisation de vignettes personnalisées.
  - Le dossier KenericDeleteCustomIcon présente un service menu facilitant la suppression de vignettes personnalisées.
 
-##
 
 ## English version:
 If it doesn't work with the Dolphin browser, remove the [PreviewSettings] group from the ~/.config/dolphinrc file.
@@ -188,24 +189,32 @@ The script must be moved to a folder in the path :
 echo "$PATH"
 ```
 
-Examples of scripts are available in the scripts folder of the sources here.
+#### Scripts sourced by keneric :
+To facilitate the development of new possibilities, keneric sources sub-scripts.
+See [script folder](scripts) for a full explanation of how sub-scripts work.
+
+#### File keneric.conf :
+~/.config/keneric.conf file.
+It is used by keneric.so and by the keneric script.
+
+All information on the file in the [config folder](config).
+
 
 ### Examples:
 #### Directory-Covert Script: With a cover file in the folder.
-![Directory-Cover](https://github.com/Hizoka76/keneric/assets/48289933/4685acfc-0522-43e2-a89f-7ddab2dee9c6)
+![Directory-Cover](Directory-Cover.png)
 
 #### Directory-Disk Script: With a disk file in the folder.
-![Directory-Disk](https://github.com/Hizoka76/keneric/assets/48289933/acf3a237-c510-457a-b00f-c9013a2acb7c)
+![Directory-Disk](Directory-Disk.png)
 
 #### Directory-Full Script: With a full file in the folder.
-![Directory-Full](https://github.com/Hizoka76/keneric/assets/48289933/9c3fa73f-0155-4806-b94c-be50a15717c4)
+![Directory-Full](Directory-Full.png)
 
 #### Video-mkv-Cover Script: With a file an image in an mkv file.
 The color of the outline adapts to the resolution of the video and in case of 3D.
-![Video-mkv-Cover](https://github.com/Hizoka76/keneric/assets/48289933/18b47874-8ca2-4fd2-9e87-1597c8aac23e)
+![Video-mkv-Cover](Video-mkv-Cover.png)
 
-### More information:
- - The conf folder presents how the configuration file works and gives examples.
+### Services:
  - The KenericHashFile folder presents a menu service copying the hash of an item.
  - The KenericRemoveThumbnails folder presents a menu service deleting thumbnails of items.
  - The KenericCustomIcon folder presents a menu service to facilitate the use of custom icons.
