@@ -1,6 +1,7 @@
 # keneric.conf
 
 ## Version Française :
+### Fichier keneric.so :
 J'ai ajouté la prise en charge d'un fichier de config par keneric.so.
 
 Ce fichier doit être placé dans le dossier de config (généralement ~/.config/keneric.conf).
@@ -48,8 +49,19 @@ La casse doit être respectée !! (icons != IconS)
 
 Les types de fichiers qui seront utilisés sont ceux définis dans les fichiers desktop.
 
+### Script keneric :
+Le script keneric accepte 2 variables en lien avec le mode debug.
+```
+[global]
+LogEnabled=1
+LogFile=/tmp/keneric.conf
+```
+ - LogEnabled à 1 active le mode debug. Attention à ne pas le laisser par erreur !
+ - LogFile est le fichier log vaut /tmp/keneric.conf par défaut.
+
 
 ## English version:
+### keneric.so File:
 I have added support for a config file by keneric.so.
 
 This file must be placed in the config folder (usually ~/.config/keneric.conf).
@@ -96,3 +108,13 @@ The above order is important, as it is the order used by keneric.so to decide it
 The case must be respected! (icons != IconS)
 
 The file types that will be used are those defined in the desktop files.
+
+### keneric Script:
+The keneric script accepts 2 debug mode variables.
+```
+[global]
+LogEnabled=1
+LogFile=/tmp/keneric.conf
+```
+ - LogEnabled at 1 activates debug mode. Be careful not to leave it on by mistake!
+ - LogFile is /tmp/keneric.conf by default.
