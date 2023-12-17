@@ -89,20 +89,20 @@ Toutes les informations sur le fichier dans le [dossier config](config)
 
 ### Exemples :
 #### Script Directory-Covert : Avec un fichier cover dans le dossier.
-![Directory-Cover](Directory-Cover.png)
+![Directory-Cover](readme/Directory-Cover.png)
 
 
 #### Script Directory-Disk : Avec un fichier disk dans le dossier.
-![Directory-Disk](Directory-Disk.png)
+![Directory-Disk](readme/Directory-Disk.png)
 
 
 #### Script Directory-Full : Avec un fichier full dans le dossier.
-![Directory-Full](Directory-Full.png)
+![Directory-Full](readme/Directory-Full.png)
 
 
 #### Script Video-mkv-Cover : Avec un fichier une image dans un fichier mkv.
 La couleur du contour s'adapte à la résolution de la vidéo et en cas de 3D.
-![Video-mkv-Cover](Video-mkv-Cover.png)
+![Video-mkv-Cover](readme/Video-mkv-Cover.png)
 
 
 ### Services :
@@ -202,17 +202,17 @@ All information on the file in the [config folder](config).
 
 ### Examples:
 #### Directory-Covert Script: With a cover file in the folder.
-![Directory-Cover](Directory-Cover.png)
+![Directory-Cover](readme/Directory-Cover.png)
 
 #### Directory-Disk Script: With a disk file in the folder.
-![Directory-Disk](Directory-Disk.png)
+![Directory-Disk](readme/Directory-Disk.png)
 
 #### Directory-Full Script: With a full file in the folder.
-![Directory-Full](Directory-Full.png)
+![Directory-Full](readme/Directory-Full.png)
 
 #### Video-mkv-Cover Script: With a file an image in an mkv file.
 The color of the outline adapts to the resolution of the video and in case of 3D.
-![Video-mkv-Cover](Video-mkv-Cover.png)
+![Video-mkv-Cover](readme/Video-mkv-Cover.png)
 
 ### Services:
  - The KenericHashFile folder presents a menu service copying the hash of an item.
