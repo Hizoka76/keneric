@@ -9,7 +9,7 @@
 #############
 ## Version ##
 #############
-# v0.1 - 2022/01/23
+# v0.1 - 2022/01/23 by Terence Belleguic
 
 
 # Fonction traduisant l'url dans le bon format
@@ -85,12 +85,15 @@ do
         continue
     fi
 
-    # Nom des vignettes
-    RealLink=$(readlink -e "${Item}")
-    Thumb="$(url_encode "${RealLink}")"
+    Item=$(readlink -e "${Item}")
 
-    # Suppression des vignettes
-    find "${HOME}/.cache/thumbnails/" -name "${Thumb}*" -delete
+    while read -d '' SubItem
+    do
+        Thumb="$(url_encode "${SubItem}")"
+
+        # Suppression des vignettes
+        find "${HOME}/.cache/thumbnails/" -name "${Thumb}*" -delete
+    done < <(find "${Item}" -print0)
 done
 
 # Rafraîchissement de l'affichage de Dolphin

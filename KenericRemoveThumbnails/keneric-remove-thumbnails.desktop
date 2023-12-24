@@ -2,7 +2,7 @@
 Type=Service
 X-KDE-ServiceTypes=KonqPopupMenu/Plugin
 MimeType=all/allfiles;inode/directory;
-Actions=_SEPARATOR_;keneric-remove-thumbnails;
+Actions=_SEPARATOR_;keneric-remove-thumbnails;keneric-recursif-remove-thumbnails;
 TryExec=keneric-remove-thumbnails
 X-KDE-Submenu=Keneric Actions
 
@@ -11,3 +11,9 @@ Name=Delete thumbnails of items
 Name[fr]=Supprimer les vignettes des éléments
 Icon=delete
 Exec=keneric-remove-thumbnails %U
+
+[Desktop Action keneric-recursif-remove-thumbnails]
+Name=Recursive delete thumbnails of items
+Name[fr]=Supprimer recursivement les vignettes des éléments
+Icon=delete
+Exec=keneric-recursive-remove-thumbnails %U
