@@ -2,7 +2,7 @@
 
 ## Version Française :
 ### Présentation :
-Ce service menu permet d'indiquer les images à utiliser comme vignettes personnalisées pour les éléments sélectionnés.
+Ce service menu permet de seléctionner une image à utiliser comme vignette personnalisée.
 
 Il modifie le fichier ~/.config/keneric.conf
 
@@ -17,7 +17,9 @@ echo "$PATH"
 ```
 
 ### Utilisation :
-Il suffit de faire un clic droit sur les éléments (fichiers ou dossiers) puis de choisir "Keneric Actions" et enfin "Choisir une vignette personnalisée".
+Faire un clic droit sur les éléments (fichiers ou dossiers) puis de choisir "Keneric Actions" et enfin "Choisir une vignette personnalisée".
+Chercher l'image à utiliser comme vignette dans le selécteur de fichier.
+Si KenericRemoveThumbnails est installé il sera exécuté afin de supprimer l'ancienne vignette du fichier, dans le cas contraire, c'est à vous de la supprimer.
 
 
 ## English version:
@@ -37,4 +39,6 @@ echo "$PATH"
 ```
 
 ### Usage:
-Just right click on the item (file or folder) then choose "Keneric Actions" and finally "Choose a custom thumbnail".
+Right-click on items (files or folders) then choose "Keneric Actions" and finally "Choose a custom thumbnail".
+Search for the image you wish to use as a thumbnail in the file browser.
+If KenericRemoveThumbnails is installed, it will be run to remove the old thumbnail from the file; otherwise, it's up to you to remove it.
