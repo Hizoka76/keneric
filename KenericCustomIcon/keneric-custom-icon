@@ -1,15 +1,15 @@
 #!/bin/bash
 
 
-##########################################################
-## Suppression des vignettes des éléments sélectionnées ##
-##########################################################
+####################################
+## Personnalisation des vignettes ##
+####################################
 
 
 #############
 ## Version ##
 #############
-# v0.1 - 2022/01/23
+# v0.1 - 2022/01/23 by Terence Belleguic
 
 
 # Fonction traduisant l'url dans le bon format
@@ -66,9 +66,6 @@ function ErrorMsg
 }
 
 
-##############################
-## Suppression de vignettes ##
-##############################
 
 # Vérifie que le fichier de config existe et que le groupe icon existe
 if ! grep -q '\[icons\]' "${HOME}/.config/keneric.conf"
@@ -84,9 +81,9 @@ do
     then
         if [[ "${LANG}" == fr* ]]
         then
-            ErrorMsg "Suppression des vignettes" "Le fichier <b>${Item}</b> est introuvable !"
+            ErrorMsg "Vignette personnalisée" "Le fichier <b>${Item}</b> est introuvable !"
         else
-            ErrorMsg "Thumbnails remove" "The <b>${Item}</b> file cannot be found!"
+            ErrorMsg "Custom Thumbnail" "The <b>${Item}</b> file cannot be found!"
         fi
 
         continue
@@ -110,7 +107,8 @@ do
 
 
     # Hash de la vignette
-    Thumb="$(url_encode "${Item}")"
+    RealLink=$(readlink -e "${Item}")
+    Thumb="$(url_encode "${RealLink}")"
 
     # Si une icône personnalisée existe déjà
     if grep -q "${Thumb}=" "${HOME}/.config/keneric.conf"
@@ -123,7 +121,7 @@ do
     fi
 done
 
-# S'il y a le module de suppression des vignettes
+# S'il y a le module de suppression des vignettes, on le lance pour mettre à jour l'icône
 if which keneric-remove-thumbnails &>/dev/null
 then
     keneric-remove-thumbnails "${@}"
@@ -133,15 +131,15 @@ fi
 if [[ "${LANG}" == fr* ]]
 then
     kdialog \
-    --title "Suppression des vignettes" \
+    --title "Vignette personnalisée" \
     --icon "link" \
     --dontagain hizo-service-menus.cfg:KenericChooseIcon \
-    --msgbox "Suppression des vignettes terminée."
+    --msgbox "Mise en place de la vignette personnalisée terminée."
 
 else
     kdialog \
-    --title "Thumbnails remove" \
+    --title "Custom Thumbnails" \
     --icon "link" \
     --dontagain hizo-service-menus.cfg:KenericChooseIcon \
-    --msgbox "Removal of thumbnails completed."
+    --msgbox "Custom thumbnail installation complete."
 fi
