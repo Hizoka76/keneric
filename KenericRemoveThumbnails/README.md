@@ -15,7 +15,7 @@ echo "$PATH"
 ```
 
 ### Utilisation :
-Il suffit de faire un clic droit sur l'élément (fichier ou dossier) puis de choisir "Keneric Actions" et enfin "Supprimer les vignettes des éléments".
+Il suffit de faire un clic droit sur l'élément (fichier ou dossier) puis de choisir "Keneric Actions" et enfin "Supprimer les vignettes des éléments" ou "Supprimer recursivement les vignettes des éléments".
 
 
 ## English version:
@@ -33,4 +33,4 @@ echo "$PATH"
 ```
 
 ### Usage:
-Just right click on the item (file or folder) then choose "Keneric Actions" and finally "Delete thumbnails of items".
+Just right click on the item (file or folder) then choose "Keneric Actions" and finally "Delete thumbnails of items" ou "Recursive delete thumbnails of items".
