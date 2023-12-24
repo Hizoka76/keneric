@@ -1,15 +1,15 @@
 #!/bin/bash
 
 
-##########################################################
-## Suppression des vignettes des éléments sélectionnées ##
-##########################################################
+##############################################
+## Suppression des vignettes personnalisées ##
+##############################################
 
 
 #############
 ## Version ##
 #############
-# v0.1 - 2022/01/23
+# v0.1 - 2022/01/23 by Terence Belleguic
 
 
 # Fonction traduisant l'url dans le bon format
@@ -82,18 +82,16 @@ do
     # Si le fichier n'existe pas
     if [[ ! -e "${Item}" ]]
     then
-        if [[ "${LANG}" == fr* ]]
-        then
-            ErrorMsg "Suppression des liens des vignettes" "Le fichier <b>${Item}</b> est introuvable !"
-        else
-            ErrorMsg "Thumbnails link remove" "The <b>${Item}</b> file cannot be found!"
-        fi
+        Message="Thumbnails link remove" "The <b>${Item}</b> file cannot be found!"
+        [[ "${LANG}" == fr* ]] && "Suppression des liens des vignettes" "Le fichier <b>${Item}</b> est introuvable !"
+        ErrorMsg "${Message}"
 
         continue
     fi
 
     # Hash de la vignette
-    Thumb="$(url_encode "${Item}")"
+    RealLink=$(readlink -e "${Item}")
+    Thumb="$(url_encode "${RealLink}")"
 
     # Suppression du lien du fichier de config
     sed -i "/${Thumb}=/d" "${HOME}/.config/keneric.conf"
@@ -106,18 +104,17 @@ then
 fi
 
 # Message de fin de traitement
+Title="Thumbnails link remove"
+Text="Removal of the custom thumbnails link completed."
+
 if [[ "${LANG}" == fr* ]]
 then
-    kdialog \
-    --title "Suppression des liens des vignettes" \
-    --icon "remove-link" \
-    --dontagain hizo-service-menus.cfg:KenericDeleteChooseIcon \
-    --msgbox "Suppression des liens des vignettes personnalisées terminée."
-
-else
-    kdialog \
-    --title "Thumbnails link remove" \
-    --icon "remove-link" \
-    --dontagain hizo-service-menus.cfg:KenericDeleteChooseIcon \
-    --msgbox "Removal of the custom thumbnails link completed."
+    Title="Suppression des liens des vignettes"
+    Text="Suppression des liens des vignettes personnalisées terminée."
 fi
+
+kdialog \
+    --title "${Title}" \
+    --icon "remove-link" \
+    --dontagain hizo-service-menus.cfg:KenericDeleteChooseIcon \
+    --msgbox "${Text}"
