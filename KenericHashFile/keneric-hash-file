@@ -1,5 +1,6 @@
 #!/bin/bash
 
+
 #############################################
 ## Copie dans le presse papier le hash md5 ##
 #############################################
@@ -8,7 +9,7 @@
 #############
 ## Version ##
 #############
-# v0.1 - 2022/01/23
+# v0.1 - 2022/01/23 by Terence Belleguic
 
 
 # Fonction traduisant l'url dans le bon format
@@ -79,7 +80,8 @@ then
 fi
 
 # Hash md5 du fichier
-Hash=$(url_encode "${1}")
+RealLink=$(readlink -e "${1}")
+Hash=$(url_encode "${RealLink}")
 
 # Copie des liens en supprimant le dernier saut de ligne
 if which qdbus &>/dev/null
