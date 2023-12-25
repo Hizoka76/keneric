@@ -32,7 +32,7 @@ Le déplacer dans le dossier **/usr/lib/x86_64-linux-gnu/qt5/plugins/**.
 #### Depuis le dépôt :
 Installer le ppa pour les dérivés d'Ubuntu et installer le paquet :
 ```
-sudo add-apt-repository ppa:hizo/service-menus
+sudo add-apt-repository ppa:hizo/keneric
 sudo apt-get update
 sudo apt install keneric
 ```
@@ -144,7 +144,7 @@ Move it to the **/usr/lib/x86_64-linux-gnu/qt5/plugins/** folder.
 #### From the repository:
 Install the ppa for Ubuntu derivatives and install its package:
 ```
-sudo add-apt-repository ppa:hizo/service-menus
+sudo add-apt-repository ppa:hizo/keneric
 sudo apt-get update
 sudo apt install keneric
 ```
