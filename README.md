@@ -1,6 +1,11 @@
 # keneric
 
 ## Version Française :
+### Attention :
+Il semble qu'il faille une version récente de Dolphin !
+Dans mes tests, il faut au moins la version 23.04.01 de Dolphin.
+Dans les plus anciennes versions, keneric ne semble pas exécuté...
+
 ### Description :
 keneric est un générateur de vignettes pour plasma KDE5 qui utilise un script (bash ou python) pour créer ces vignettes.
 
@@ -113,6 +118,11 @@ Des services en liens sont égalements proposés :
 
 
 ## English version:
+### Warning:
+It seems that you need a recent version of Dolphin!
+In my tests, you need at least Dolphin version 23.04.01.
+In older versions, keneric doesn't seem to run...
+
 ### Description:
 keneric is a thumbnail generator for KDE5 plasma that uses a script (bash or python) to create these thumbnails.
 
